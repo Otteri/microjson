@@ -32,7 +32,7 @@ objects or strings - not reals or integers or floats - as elements
 (this limitation could be easily removed if required). Third, all
 elements of an array must be of the same type.
 
-   There are separata entry points for beginning a parse of either
+   There are separate entry points for beginning a parse of either
 JSON object or a JSON array. JSON "float" quantities are actually
 stored as doubles.
 
