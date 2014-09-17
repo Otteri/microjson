@@ -40,10 +40,10 @@ struct json_array_t {
 	} uintegers;
 	struct {
 	    double *store;
-	} real;
+	} reals;
 	struct {
 	    bool *store;
-	} boolean;
+	} booleans;
     } arr;
     int *count, maxlen;
 };

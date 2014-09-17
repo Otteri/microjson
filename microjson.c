@@ -859,14 +859,14 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		cp = ep;
 	    break;
 	case t_uinteger:
-	    arr->arr.uintegers.store[offset] = (int)strtoul(cp, &ep, 0);
+	    arr->arr.uintegers.store[offset] = (unsigned int)strtoul(cp, &ep, 0);
 	    if (ep == cp)
 		return JSON_ERR_BADNUM;
 	    else
 		cp = ep;
 	    break;
 	case t_real:
-	    arr->arr.real.store[offset] = (int)strtod(cp, &ep);
+	    arr->arr.reals.store[offset] = strtod(cp, &ep);
 	    if (ep == cp)
 		return JSON_ERR_BADNUM;
 	    else
@@ -874,11 +874,11 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    break;
 	case t_boolean:
 	    if (strncmp(cp, "true", 4) == 0) {
-		arr->arr.boolean.store[offset] = true;
+		arr->arr.booleans.store[offset] = true;
 		cp += 4;
 	    }
 	    else if (strncmp(cp, "false", 5) == 0) {
-		arr->arr.boolean.store[offset] = false;
+		arr->arr.booleans.store[offset] = false;
 		cp += 5;
 	    }
 	    break;
