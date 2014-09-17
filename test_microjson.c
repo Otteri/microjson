@@ -19,6 +19,10 @@
 
 #include "microjson.h"
 
+/*
+ * Many of these structures and examples were dissected out of the GPSD code.
+ */
+
 #define MAXCHANNELS	20
 #define MAXUSERDEVS	4
 #define JSON_DATE_MAX	24	/* ISO8601 timestamp with 2 decimal places */
@@ -735,7 +739,7 @@ int main(int argc, char *argv[])
 	}
     }
 
-    (void)fprintf(stderr, "JSON unit test ");
+    (void)fprintf(stderr, "microjson unit test ");
 
     if (individual)
 	jsontest(individual);
@@ -749,3 +753,5 @@ int main(int argc, char *argv[])
 
     exit(EXIT_SUCCESS);
 }
+
+/* end */
