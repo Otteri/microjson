@@ -54,7 +54,7 @@ everything will work. Strings are supported but all string storage
 has to be inline in the struct.
 
 PERMISSIONS
-   This file is Copyright (c) 2014 by the Eric S. Raymond
+   This file is Copyright (c) 2014 by Eric S. Raymond
    BSD terms apply: see the file COPYING in the distribution root for details.
 
 ***************************************************************************/

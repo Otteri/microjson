@@ -15,15 +15,18 @@ test_microjson: test_microjson.o microjson.o
 check: test_microjson
 	test_microjson
 
+# Worked example
+example1: example1.c microjson.c
+
 clean:
-	rm -f microjson.o test_json
+	rm -f microjson.o test_json example1
 
 CSUPPRESSIONS = -U__UNUSED__
 cppcheck:
 	cppcheck -I. --template gcc --enable=all --suppress=unusedStructMember $(CSUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
-DOCS = README COPYING
+DOCS = README COPYING microjson.asc
 ALL =  $(SOURCES) $(DOCS)
 microjson-$(VERSION).tar.gz: $(ALL)
 	tar --transform='s:^:microjson-$(VERSION)/:' --show-transformed-names -cvzf microjson-$(VERSION).tar.gz $(ALL)
