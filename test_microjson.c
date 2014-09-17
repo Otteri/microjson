@@ -606,6 +606,21 @@ static const struct json_attr_t json_attrs_8[] = {
 
 static const char *json_str9 = "{\"parts\":[]}";
 
+/* Case 10: Read array of integers in a member */
+
+static const char *json_str10 = "[23,-17,5]";
+static int intstore[4], intcount;
+
+/*@-type@*/
+static const struct json_array_t json_array_10 = {
+    .element_type = t_integer,
+    .arr.integers.store = intstore,
+    .arr.integers.storelen = sizeof(intstore),
+    .count = &intcount,
+    .maxlen = sizeof(intstore)/sizeof(intstore[0]),
+};
+/*@+type@*/
+
 /*@ +fullinitblock @*/
 /* *INDENT-ON* */
 
@@ -710,7 +725,15 @@ static void jsontest(int i)
 	assert_integer("dumbcount", dumbcount, 0);
 	break;
 
-#define MAXTEST 9
+    case 10:
+	status = json_read_array(json_str10, &json_array_10, NULL);
+	assert_integer("instore[0]", intstore[0], 23);
+	assert_integer("instore[1]", intstore[1], -17);
+	assert_integer("instore[2]", intstore[2], 5);
+	assert_integer("instore[3]", intstore[3], 0);
+	break;
+
+#define MAXTEST 10
 
     default:
 	(int)fputs("Unknown test number\n", stderr);

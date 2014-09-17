@@ -5,12 +5,12 @@ VERSION=0.1
 CFLAGS = -O
 
 # Add DEBUG_ENABLE for the tracing code
-# CFLAGS += -DDEBUG_ENABLE
+CFLAGS += -DDEBUG_ENABLE -g
 
 microjson.o: microjson.c microjson.h
 
 test_microjson: test_microjson.o microjson.o
-	$(CC) -o test_microjson test_microjson.o microjson.o
+	$(CC) $(CFLAGS) -o test_microjson test_microjson.o microjson.o
 
 check: test_microjson
 	test_microjson
@@ -19,7 +19,7 @@ check: test_microjson
 example1: example1.c microjson.c
 
 clean:
-	rm -f microjson.o test_json example1
+	rm -f microjson.o test_microjson.o test_microjson example1
 
 CSUPPRESSIONS = -U__UNUSED__
 cppcheck:

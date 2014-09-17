@@ -816,6 +816,7 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	goto breakout;
 
     for (offset = 0; offset < arr->maxlen; offset++) {
+	char *ep = NULL;
 	json_debug_trace((1, "Looking at %s\n", cp));
 	switch (arr->element_type) {
 	case t_string:
@@ -852,7 +853,19 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		return substatus;
 	    break;
 	case t_integer:
+	    arr->arr.integers.store[offset] = (int)strtol(cp, &ep, 0);
+	    if (ep == cp)
+		return JSON_ERR_BADNUM;
+	    else
+		cp = ep;
+	    break;
 	case t_uinteger:
+	    arr->arr.integers.store[offset] = (int)strtoul(cp, &ep, 0);
+	    if (ep == cp)
+		return JSON_ERR_BADNUM;
+	    else
+		cp = ep;
+	    break;
 	case t_time:
 	case t_real:
 	case t_boolean:
@@ -913,7 +926,7 @@ const /*@observer@*/ char *json_error_string(int err)
 	"array element specified, but no [",
 	"string value too long",
 	"token value too long",
-	"garbage while expecting , or }",
+	"garbage while expecting comma or } or ]",
 	"didn't find expected array start",
 	"error while parsing object array",
 	"too many array elements",
