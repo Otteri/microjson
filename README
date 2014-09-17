@@ -8,6 +8,8 @@ constrained embedded environments.  It may also be of interest for
 code where malloc is verboten to reduce reliability and sexurity 
 vulnerabilities.
 
+BSD license terms apply; see the file COPYING.
+
 						Eric S. Raymond
 						Ocrober 2014
 
