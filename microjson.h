@@ -34,8 +34,16 @@ struct json_array_t {
 	} strings;
 	struct {
 	    int *store;
-	    int storelen;
 	} integers;
+	struct {
+	    unsigned int *store;
+	} uintegers;
+	struct {
+	    double *store;
+	} real;
+	struct {
+	    bool *store;
+	} boolean;
     } arr;
     int *count, maxlen;
 };

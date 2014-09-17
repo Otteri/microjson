@@ -27,10 +27,9 @@ vs. boolean, but not signed integer vs. unsigned integer).  The parser
 will match the right spec against the actual data.
 
    The dialect this parses has some limitations.  First, it cannot
-recognize the JSON "null" value.  Secondly, arrays may only have
-objects or strings - not reals or integers or floats - as elements
-(this limitation could be easily removed if required). Third, all
-elements of an array must be of the same type.
+recognize the JSON "null" value. Second, all elements of an array must
+be of the same type. Third, some types (t_time, t_character) may not
+ve array elements (this restriction ciuld be lifted)
 
    There are separate entry points for beginning a parse of either
 JSON object or a JSON array. JSON "float" quantities are actually
@@ -860,15 +859,30 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		cp = ep;
 	    break;
 	case t_uinteger:
-	    arr->arr.integers.store[offset] = (int)strtoul(cp, &ep, 0);
+	    arr->arr.uintegers.store[offset] = (int)strtoul(cp, &ep, 0);
 	    if (ep == cp)
 		return JSON_ERR_BADNUM;
 	    else
 		cp = ep;
 	    break;
-	case t_time:
 	case t_real:
+	    arr->arr.real.store[offset] = (int)strtod(cp, &ep);
+	    if (ep == cp)
+		return JSON_ERR_BADNUM;
+	    else
+		cp = ep;
+	    break;
 	case t_boolean:
+	    if (strncmp(cp, "true", 4) == 0) {
+		arr->arr.boolean.store[offset] = true;
+		cp += 4;
+	    }
+	    else if (strncmp(cp, "false", 5) == 0) {
+		arr->arr.boolean.store[offset] = false;
+		cp += 5;
+	    }
+	    break;
+	case t_time:
 	case t_character:
 	case t_array:
 	case t_check:
