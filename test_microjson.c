@@ -33,8 +33,6 @@
 #define DEVDEFAULT_STOPBITS	3
 #define DEVDEFAULT_NATIVE	-1
 
-#define NITEMS(x) (int)(sizeof(x)/sizeof(x[0]))
-
 typedef double timestamp_t;	/* Unix time in seconds with fractional part */
 
 struct dop_t {

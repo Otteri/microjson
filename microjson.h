@@ -1,11 +1,13 @@
 /* Structures for JSON parsing using only fixed-extent memory
  *
- * This file is Copyright (c) 2010 by the GPSD project
+ * This file is Copyright (c) 2014 by Eric S. Raymond.
  * BSD terms apply: see the file COPYING in the distribution root for details.
  */
 
 #include <stdbool.h>
 #include <ctype.h>
+
+#define NITEMS(x) (int)(sizeof(x)/sizeof(x[0]))
 
 typedef enum {t_integer, t_uinteger, t_real,
 	      t_string, t_boolean, t_character,
