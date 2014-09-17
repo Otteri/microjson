@@ -726,7 +726,11 @@ int main(int argc, char *argv[])
     while ((option = getopt(argc, argv, "hn:D:?")) != -1) {
 	switch (option) {
 	case 'D':
-	    //gps_enable_debug(atoi(optarg), stdout);
+#ifdef DEBUG_ENABLE
+	    json_enable_debug(atoi(optarg), stdout);
+#else
+	    fputs("Debug disabled in build\n", stderr);
+#endif
 	    break;
 	case 'n':
 	    individual = atoi(optarg);
