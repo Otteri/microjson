@@ -751,7 +751,7 @@ static int json_internal_read_object(const char *cp,
 		case t_check:
 		    if (strcmp(cursor->dflt.check, valbuf) != 0) {
 			json_debug_trace((1,
-					  "Required attribute vakue %s not present.\n",
+					  "Required attribute value %s not present.\n",
 					  cursor->dflt.check));
 			return JSON_ERR_CHECKFAIL;
 		    }
@@ -775,7 +775,7 @@ static int json_internal_read_object(const char *cp,
     }
 
   good_parse:
-    /* in case there's another object following, consune trailing WS */
+    /* in case there's another object following, consume trailing WS */
     while (isspace((unsigned char) *cp))
 	++cp;
     if (end != NULL)
