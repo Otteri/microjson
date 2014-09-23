@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "microjson.h"
+#include "mjson.h"
 
 static bool flag1, flag2;
 static int count;

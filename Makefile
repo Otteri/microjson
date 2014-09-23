@@ -7,19 +7,21 @@ CFLAGS = -O
 # Add DEBUG_ENABLE for the tracing code
 CFLAGS += -DDEBUG_ENABLE -g
 
-microjson.o: microjson.c microjson.h
+mjson.o: mjson.c mjson.h
 
-test_microjson: test_microjson.o microjson.o
-	$(CC) $(CFLAGS) -o test_microjson test_microjson.o microjson.o
+test_microjson: test_microjson.o mjson.o
+	$(CC) $(CFLAGS) -o test_microjson test_microjson.o mjson.o
 
 # Regression test
 check: test_microjson
 	test_microjson
 
-# Worked examples
-example1: example1.c microjson.c
-example2: example2.c microjson.c
-example3: example3.c microjson.c
+make testbuild: mjson.o test_microjson example1 example2 example3
+
+# Worked examples.  These are essentially subsets of the regresion test.
+example1: example1.c mjson.c
+example2: example2.c mjson.c
+example3: example3.c mjson.c
 
 clean:
 	rm -f microjson.o test_microjson.o test_microjson example[123]
@@ -36,5 +38,5 @@ microjson-$(VERSION).tar.gz: $(ALL)
 
 dist: microjson-$(VERSION).tar.gz
 
-release: microjson-$(VERS).tar.gz microjson.html
+release: microjson-$(VERS).tar.gz mjson.html
 	shipper version=$(VERS) | sh -e -x

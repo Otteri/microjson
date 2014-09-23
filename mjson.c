@@ -1,7 +1,7 @@
 /****************************************************************************
 
 NAME
-   microjson.c - parse JSON into fixed-extent data structures
+   mjson.c - parse JSON into fixed-extent data structures
 
 DESCRIPTION
    This module parses a large subset of JSON (JavaScript Object
@@ -74,7 +74,7 @@ PERMISSIONS
 #include <sys/time.h>
 #include <errno.h>
 
-#include "microjson.h"
+#include "mjson.h"
 
 #ifdef DEBUG_ENABLE
 static int debuglevel = 0;

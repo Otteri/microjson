@@ -1,4 +1,4 @@
-/* test_microjson.c - unit test for JSON parsing into fixed-extent structures
+/* test_mjson.c - unit test for JSON parsing into fixed-extent structures
  *
  * This file is Copyright (c) 2010 by the GPSD project
  * BSD terms apply: see the file COPYING in the distribution root for details.
@@ -17,7 +17,7 @@
 #include <math.h>
 #include <stddef.h>
 
-#include "microjson.h"
+#include "mjson.h"
 
 /*
  * Many of these structures and examples were dissected out of the GPSD code.

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "microjson.h"
+#include "mjson.h"
 
 #define MAXCHANNELS 72
 

@@ -9,7 +9,7 @@
 #include <limits.h>
 #include <string.h>
 
-#include "microjson.h"
+#include "mjson.h"
 
 #define MAXUSERDEVS	4
 
