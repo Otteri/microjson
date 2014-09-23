@@ -1,3 +1,4 @@
 *.o
+*.html
 test_microjson
 example[123]
