@@ -29,7 +29,7 @@ will match the right spec against the actual data.
    The dialect this parses has some limitations.  First, it cannot
 recognize the JSON "null" value. Second, all elements of an array must
 be of the same type. Third, some types (t_time, t_character) may not
-ve array elements (this restriction ciuld be lifted)
+ve array elements (this restriction could be lifted)
 
    There are separate entry points for beginning a parse of either
 JSON object or a JSON array. JSON "float" quantities are actually
