@@ -1,6 +1,6 @@
 /* example1.c - first example in the programming guide
  *
- * This file is Copyright (c) 2010 by the GPSD project
+ * This file is Copyright (c) 2014 by Eric S. Raymond
  * BSD terms apply: see the file COPYING in the distribution root for details.
  */
 

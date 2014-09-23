@@ -134,6 +134,6 @@ void json_enable_debug(int, FILE *);
 	.addr.array.arr.objects.base = (char*)a, \
 	.addr.array.arr.objects.stride = sizeof(a[0]), \
 	.addr.array.count = n, \
-	.addr.array.maxlen = NITEMS(a)
+	.addr.array.maxlen = (int)(sizeof(a)/sizeof(a[0]))
 
 /* json.h ends here */

@@ -15,8 +15,10 @@ test_microjson: test_microjson.o microjson.o
 check: test_microjson
 	test_microjson
 
-# Worked example
+# Worked examples
 example1: example1.c microjson.c
+example2: example2.c microjson.c
+example3: example3.c microjson.c
 
 clean:
 	rm -f microjson.o test_microjson.o test_microjson example1
