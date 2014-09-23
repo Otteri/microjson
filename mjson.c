@@ -29,7 +29,7 @@ will match the right spec against the actual data.
    The dialect this parses has some limitations.  First, it cannot
 recognize the JSON "null" value. Second, all elements of an array must
 be of the same type. Third, some types (t_time, t_character) may not
-ve array elements (this restriction could be lifted)
+be array elements (this restriction could be lifted)
 
    There are separate entry points for beginning a parse of either
 JSON object or a JSON array. JSON "float" quantities are actually
@@ -59,8 +59,7 @@ PERMISSIONS
 ***************************************************************************/
 
 /* The strptime prototype is not provided unless explicitly requested.
- * We also need to set the value high enough to signal inclusion of
- * newer features (like clock_gettime).  See the POSIX spec for more info:
+ * See the POSIX spec for more info:
  * http://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_02_01_02 */
 #define _XOPEN_SOURCE 600
 
