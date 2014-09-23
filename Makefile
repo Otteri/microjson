@@ -12,6 +12,12 @@ mjson.o: mjson.c mjson.h
 test_microjson: test_microjson.o mjson.o
 	$(CC) $(CFLAGS) -o test_microjson test_microjson.o mjson.o
 
+.SUFFIXES: .html .asc
+
+# Requires asciidoc and xsltproc/docbook stylesheets.
+.asc.html:
+	asciidoc $*.asc
+
 # Regression test
 check: test_microjson
 	test_microjson
@@ -25,6 +31,7 @@ example3: example3.c mjson.c
 
 clean:
 	rm -f microjson.o test_microjson.o test_microjson example[123]
+	rm -f microjson.html
 
 CSUPPRESSIONS = -U__UNUSED__
 cppcheck:
@@ -38,5 +45,5 @@ microjson-$(VERSION).tar.gz: $(ALL)
 
 dist: microjson-$(VERSION).tar.gz
 
-release: microjson-$(VERS).tar.gz mjson.html
+release: microjson-$(VERS).tar.gz microjson.html
 	shipper version=$(VERS) | sh -e -x

@@ -8,10 +8,13 @@ constrained embedded environments.  It may also be of interest for
 code where malloc is verboten to reduce reliability and sexurity 
 vulnerabilities.
 
+There's no man page, but there's a tutorial with examples in
+microjson.asc.
+
 BSD license terms apply; see the file COPYING.
 
 						Eric S. Raymond
-						Ocrober 2014
+						October 2014
 
 
 
