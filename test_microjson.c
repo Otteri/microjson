@@ -419,43 +419,45 @@ static void assert_case(int num, int status)
     }
 }
 
-static void assert_string(char *attr, char *fld, char *val)
+static void assert_string(char *attr, char *fld, char *check)
 {
-    if (strcmp(fld, val)) {
+    if (strcmp(fld, check)) {
 	(void)fprintf(stderr,
-		      "'%s' string attribute eval failed, value = %s.\n",
-		      attr, fld);
+		      "'%s' expecting string '%s', got '%s'.\n",
+		      attr, check, fld);
 	exit(EXIT_FAILURE);
     }
 }
 
-static void assert_integer(char *attr, int fld, int val)
+static void assert_integer(char *attr, int fld, int check)
 {
-    if (fld != val) {
+    if (fld != check) {
 	(void)fprintf(stderr,
-		      "'%s' integer attribute eval failed, value = %d.\n",
-		      attr, fld);
+		      "'%s' expecting integer %d, got %d.\n",
+		      attr, check, fld);
 	exit(EXIT_FAILURE);
     }
 }
 
-static void assert_uinteger(char *attr, uint fld, uint val)
+static void assert_uinteger(char *attr, uint fld, uint check)
 {
-    if (fld != val) {
+    if (fld != check) {
 	(void)fprintf(stderr,
-		      "'%s' integer attribute eval failed, value = %u.\n",
-		      attr, fld);
+		      "'%s' expecting uinteger %u, got %u.\n",
+		      attr, check, fld);
 	exit(EXIT_FAILURE);
     }
 }
 
-static void assert_boolean(char *attr, bool fld, bool val)
+static void assert_boolean(char *attr, bool fld, bool check)
 {
     /*@-boolcompare@*/
-    if (fld != val) {
+    if (fld != check) {
 	(void)fprintf(stderr,
-		      "'%s' boolean attribute eval failed, value = %s.\n",
-		      attr, fld ? "true" : "false");
+		      "'%s' expecting boolean %s, got %s.\n",
+		      attr, 
+		      check ? "true" : "false",
+		      fld ? "true" : "false");
 	exit(EXIT_FAILURE);
     }
     /*@+boolcompare@*/
@@ -465,12 +467,12 @@ static void assert_boolean(char *attr, bool fld, bool val)
  * Floating point comparisons are iffy, but at least if any of these fail
  * the output will make it clear whether it was a precision issue
  */
-static void assert_real(char *attr, double fld, double val)
+static void assert_real(char *attr, double fld, double check)
 {
-    if (fld != val) {
+    if (fld != check) {
 	(void)fprintf(stderr,
-		      "'%s' real attribute eval failed, value = %f.\n", attr,
-		      fld);
+		      "'%s' expecting real %f got %f.\n", 
+		      attr, check, fld);
 	exit(EXIT_FAILURE);
     }
 }
