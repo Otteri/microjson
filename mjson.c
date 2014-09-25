@@ -57,20 +57,12 @@ PERMISSIONS
    BSD terms apply: see the file COPYING in the distribution root for details.
 
 ***************************************************************************/
-
-/* The strptime prototype is not provided unless explicitly requested.
- * See the POSIX spec for more info:
- * http://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_02_01_02 */
-#define _XOPEN_SOURCE 600
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <ctype.h>
-#include <time.h>
-#include <sys/time.h>
 #include <errno.h>
 
 #include "mjson.h"
