@@ -45,5 +45,5 @@ microjson-$(VERSION).tar.gz: $(ALL)
 
 dist: microjson-$(VERSION).tar.gz
 
-release: microjson-$(VERS).tar.gz microjson.html
-	shipper version=$(VERS) | sh -e -x
+release: microjson-$(VERSION).tar.gz microjson.html
+	shipper version=$(VERSION) | sh -e -x
