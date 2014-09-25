@@ -28,8 +28,8 @@ will match the right spec against the actual data.
 
    The dialect this parses has some limitations.  First, it cannot
 recognize the JSON "null" value. Second, all elements of an array must
-be of the same type. Third, some types (t_time, t_character) may not
-be array elements (this restriction could be lifted)
+be of the same type. Third, characters may not be array elements (this
+restriction could be lifted)
 
    There are separate entry points for beginning a parse of either
 JSON object or a JSON array. JSON "float" quantities are actually
@@ -109,51 +109,6 @@ static void json_trace(int errlevel, const char *fmt, ...)
 # define json_debug_trace(args) /*@i1@*/do { } while (0)
 #endif /* DEBUG_ENABLE */
 
-#define MONTHSPERYEAR	12	/* months per calendar year */
-
-static time_t mkutctime(register struct tm * t)
-/* struct tm to seconds since Unix epoch */
-{
-    register int year;
-    register time_t result;
-    static const int cumdays[MONTHSPERYEAR] =
-	{ 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-
-    /*@ +matchanyintegral @*/
-    year = 1900 + t->tm_year + t->tm_mon / MONTHSPERYEAR;
-    result = (year - 1970) * 365 + cumdays[t->tm_mon % MONTHSPERYEAR];
-    result += (year - 1968) / 4;
-    result -= (year - 1900) / 100;
-    result += (year - 1600) / 400;
-    if ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0) &&
-	(t->tm_mon % MONTHSPERYEAR) < 2)
-	result--;
-    result += t->tm_mday - 1;
-    result *= 24;
-    result += t->tm_hour;
-    result *= 60;
-    result += t->tm_min;
-    result *= 60;
-    result += t->tm_sec;
-    /*@ -matchanyintegral @*/
-    return (result);
-}
-
-static double iso8601_to_unix(/*@in@*/const char *isotime)
-/* ISO8601 UTC to Unix UTC */
-{
-    char *dp = NULL;
-    double usec;
-    struct tm tm;
-
-    /*@i1@*/ dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
-    if (dp != NULL && *dp == '.')
-	usec = strtod(dp, NULL);
-    else
-	usec = 0;
-    return mkutctime(&tm) + usec;
-}
-
 /*@-immediatetrans -dependenttrans -usereleased -compdef@*/
 static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
 					     /*@null@*/
@@ -173,7 +128,6 @@ static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
 	case t_uinteger:
 	    targetaddr = (char *)&cursor->addr.uinteger[offset];
 	    break;
-	case t_time:
 	case t_real:
 	    targetaddr = (char *)&cursor->addr.real[offset];
 	    break;
@@ -251,7 +205,6 @@ static int json_internal_read_object(const char *cp,
 		case t_uinteger:
 		    memcpy(lptr, &cursor->dflt.uinteger, sizeof(unsigned int));
 		    break;
-		case t_time:
 		case t_real:
 		    memcpy(lptr, &cursor->dflt.real, sizeof(double));
 		    break;
@@ -332,7 +285,7 @@ static int json_internal_read_object(const char *cp,
 		    maxlen = (int)cursor->len - 1;
 		else if (cursor->type == t_check)
 		    maxlen = (int)strlen(cursor->dflt.check);
-		else if (cursor->type == t_time || cursor->type == t_ignore)
+		else if (cursor->type == t_ignore)
 		    maxlen = JSON_VAL_MAX;
 		else if (cursor->map != NULL)
 		    maxlen = (int)sizeof(valbuf) - 1;
@@ -445,7 +398,7 @@ static int json_internal_read_object(const char *cp,
 	     */
 	    for (;;) {
 		int seeking = cursor->type;
-		if (value_quoted && (cursor->type == t_string || cursor->type == t_time))
+		if (value_quoted && cursor->type == t_string)
 		    break;
 		if ((strcmp(valbuf, "true")==0 || strcmp(valbuf, "false")==0)
 			&& seeking == t_boolean)
@@ -465,7 +418,7 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    if (value_quoted
 		&& (cursor->type != t_string && cursor->type != t_character
-		    && cursor->type != t_check && cursor->type != t_time
+		    && cursor->type != t_check
 		    && cursor->type != t_ignore && cursor->map == 0)) {
 		json_debug_trace((1,
 				  "Saw quoted value when expecting non-string.\n"));
@@ -473,7 +426,7 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    if (!value_quoted
 		&& (cursor->type == t_string || cursor->type == t_check
-		    || cursor->type == t_time || cursor->map != 0)) {
+		    || cursor->map != 0)) {
 		json_debug_trace((1,
 				  "Didn't see quoted value when expecting string.\n"));
 		return JSON_ERR_NONQSTRING;
@@ -502,12 +455,6 @@ static int json_internal_read_object(const char *cp,
 		    {
 			unsigned int tmp = (unsigned int)atoi(valbuf);
 			memcpy(lptr, &tmp, sizeof(unsigned int));
-		    }
-		    break;
-		case t_time:
-		    {
-			double tmp = iso8601_to_unix(valbuf);
-			memcpy(lptr, &tmp, sizeof(double));
 		    }
 		    break;
 		case t_real:
@@ -675,7 +622,6 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		cp += 5;
 	    }
 	    break;
-	case t_time:
 	case t_character:
 	case t_array:
 	case t_check:
