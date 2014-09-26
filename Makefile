@@ -15,11 +15,13 @@ mjson.o: mjson.c mjson.h
 test_microjson: test_microjson.o mjson.o
 	$(CC) $(CFLAGS) -o test_microjson test_microjson.o mjson.o
 
-.SUFFIXES: .html .asc
+.SUFFIXES: .html .asc .3
 
 # Requires asciidoc and xsltproc/docbook stylesheets.
 .asc.html:
 	asciidoc $*.asc
+.asc.3:
+	a2x --doctype manpage --format manpage $*.asc
 
 # Regression test
 check: test_microjson
@@ -47,5 +49,5 @@ microjson-$(VERSION).tar.gz: $(ALL)
 
 dist: microjson-$(VERSION).tar.gz
 
-release: microjson-$(VERSION).tar.gz microjson.html
+release: microjson-$(VERSION).tar.gz microjson.html mjson.html
 	shipper version=$(VERSION) | sh -e -x
