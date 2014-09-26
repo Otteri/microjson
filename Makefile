@@ -34,7 +34,7 @@ example3: example3.c mjson.c
 
 clean:
 	rm -f microjson.o test_microjson.o test_microjson example[123]
-	rm -f microjson.html
+	rm -f microjson.html mjson.html
 
 SUPPRESSIONS = --suppress=unusedStructMember
 SUPPRESSIONS += -U__UNUSED__
@@ -42,7 +42,7 @@ cppcheck:
 	cppcheck -I. --template gcc --enable=all $() $(SUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
-DOCS = README COPYING NEWS control microjson.asc
+DOCS = README COPYING NEWS control microjson.asc mjson.asc
 ALL =  $(SOURCES) $(DOCS)
 microjson-$(VERSION).tar.gz: $(ALL)
 	tar --transform='s:^:microjson-$(VERSION)/:' --show-transformed-names -cvzf microjson-$(VERSION).tar.gz $(ALL)
