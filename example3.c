@@ -30,7 +30,6 @@ static int json_devicelist_read(const char *buf)
     const struct json_attr_t json_attrs_subdevice[] = {
 	{"path",       t_string,     STRUCTOBJECT(struct devconfig_t, path),
 	                                .len = sizeof(devicelist.list[0].path)},
-	{"activated",  t_time,       STRUCTOBJECT(struct devconfig_t, activated)},
 	{"activated",  t_real,       STRUCTOBJECT(struct devconfig_t, activated)},
 	{NULL},
     };
