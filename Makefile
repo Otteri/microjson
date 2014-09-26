@@ -1,6 +1,6 @@
 # Makefile for the microjson project:
 
-VERSION=1.0
+VERSION=1.1
 
 CFLAGS = -O
 
