@@ -776,6 +776,9 @@ static void jsontest(int i)
 	(int)fputs("Unknown test number\n", stderr);
 	break;
     }
+
+    if (status > 0)
+	printf("Parse failure!\n");
 }
 
 int main(int argc, char *argv[])

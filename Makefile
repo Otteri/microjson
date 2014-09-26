@@ -34,9 +34,10 @@ clean:
 	rm -f microjson.o test_microjson.o test_microjson example[123]
 	rm -f microjson.html
 
-CSUPPRESSIONS = -U__UNUSED__
+SUPPRESSIONS = --suppress=unusedStructMember
+SUPPRESSIONS += -U__UNUSED__
 cppcheck:
-	cppcheck -I. --template gcc --enable=all --suppress=unusedStructMember $(CSUPPRESSIONS) *.[ch]
+	cppcheck -I. --template gcc --enable=all $() $(SUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
 DOCS = README COPYING NEWS control microjson.asc
