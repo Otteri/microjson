@@ -7,6 +7,9 @@ CFLAGS = -O
 # Add DEBUG_ENABLE for the tracing code
 CFLAGS += -DDEBUG_ENABLE -g
 
+all: mjson.o test_microjson example1 example2 example3
+	@test_microjson
+
 mjson.o: mjson.c mjson.h
 
 test_microjson: test_microjson.o mjson.o
@@ -21,8 +24,6 @@ test_microjson: test_microjson.o mjson.o
 # Regression test
 check: test_microjson
 	test_microjson
-
-make testbuild: mjson.o test_microjson example1 example2 example3
 
 # Worked examples.  These are essentially subsets of the regresion test.
 example1: example1.c mjson.c
