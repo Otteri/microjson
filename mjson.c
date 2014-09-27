@@ -248,6 +248,10 @@ static int json_internal_read_object(const char *cp,
 	    else if (*cp == '"') {
 		state = in_attr;
 		pattr = attrbuf;
+#ifndef JSON_MINIMAL
+		if (end != NULL)
+		    *end = cp;
+#endif
 	    } else if (*cp == '}')
 		break;
 	    else {
@@ -259,8 +263,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_attr:
 	    if (pattr == NULL) {
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at attribute start */
 		return JSON_ERR_NULLPTR;
 	    }
 	    if (*cp == '"') {
@@ -277,6 +280,7 @@ static int json_internal_read_object(const char *cp,
 		    json_debug_trace((1,
 				      "Unknown attribute name '%s' (attributes begin with '%s').\n",
 				      attrbuf, attrs->attribute));
+		    /* don't update end here, leave at attribute start */
 		    return JSON_ERR_BADATTR;
 		}
 		state = await_value;
@@ -291,8 +295,7 @@ static int json_internal_read_object(const char *cp,
 		pval = valbuf;
 	    } else if (pattr >= attrbuf + JSON_ATTR_MAX - 1) {
 		json_debug_trace((1, "Attribute name too long.\n"));
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at attribute start */
 		return JSON_ERR_ATTRLEN;
 	    } else
 		*pattr++ = *cp;
@@ -331,8 +334,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_val_string:
 	    if (pval == NULL) {
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at value start */
 		return JSON_ERR_NULLPTR;
 	    }
 	    if (*cp == '\\')
@@ -344,8 +346,7 @@ static int json_internal_read_object(const char *cp,
 	    } else if (pval > valbuf + JSON_VAL_MAX - 1
 		       || pval > valbuf + maxlen) {
 		json_debug_trace((1, "String value too long.\n"));
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at value start */
 		return JSON_ERR_STRLONG;	/*  */
 	    } else
 		*pval++ = *cp;
@@ -387,8 +388,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_val_token:
 	    if (pval == NULL) {
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at value start */
 		return JSON_ERR_NULLPTR;
 	    }
 	    if (isspace((unsigned char) *cp) || *cp == ',' || *cp == '}') {
@@ -399,8 +399,7 @@ static int json_internal_read_object(const char *cp,
 		    --cp;
 	    } else if (pval > valbuf + JSON_VAL_MAX - 1) {
 		json_debug_trace((1, "Token value too long.\n"));
-		if (end != NULL)
-		    *end = cp;
+		/* don't update end here, leave at value start */
 		return JSON_ERR_TOKLONG;
 	    } else
 		*pval++ = *cp;
@@ -440,8 +439,6 @@ static int json_internal_read_object(const char *cp,
 		    && cursor->type != t_ignore && cursor->map == 0)) {
 		json_debug_trace((1,
 				  "Saw quoted value when expecting non-string.\n"));
-		if (end != NULL)
-		    *end = cp;
 		return JSON_ERR_QNONSTRING;
 	    }
 	    if (!value_quoted
@@ -449,8 +446,6 @@ static int json_internal_read_object(const char *cp,
 		    || cursor->map != 0)) {
 		json_debug_trace((1,
 				  "Didn't see quoted value when expecting string.\n"));
-		if (end != NULL)
-		    *end = cp;
 		return JSON_ERR_NONQSTRING;
 	    }
 	    if (cursor->map != 0) {
@@ -460,8 +455,6 @@ static int json_internal_read_object(const char *cp,
 		    }
 		json_debug_trace((1, "Invalid enumerated value string %s.\n",
 				  valbuf));
-		if (end != NULL)
-		    *end = cp;
 		return JSON_ERR_BADENUM;
 	      foundit:
 		(void)snprintf(valbuf, sizeof(valbuf), "%d", mp->value);
@@ -520,8 +513,7 @@ static int json_internal_read_object(const char *cp,
 			json_debug_trace((1,
 					  "Required attribute value %s not present.\n",
 					  cursor->dflt.check));
-			if (end != NULL)
-			    *end = cp;
+			/* don't update end here, leave at start of attribute */
 			return JSON_ERR_CHECKFAIL;
 		    }
 		    break;
@@ -619,8 +611,11 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    substatus =
 		json_internal_read_object(cp, arr->arr.objects.subtype, arr,
 					  offset, &cp);
-	    if (substatus != 0)
+	    if (substatus != 0) {
+		if (end != NULL)
+		    end = &cp;
 		return substatus;
+	    }
 	    break;
 	case t_integer:
 	    arr->arr.integers.store[offset] = (int)strtol(cp, &ep, 0);
