@@ -237,7 +237,7 @@ static int json_internal_read_object(const char *cp,
 	    else {
 		json_debug_trace((1,
 				  "Non-WS when expecting object start.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_OBSTART;
 	    }
@@ -252,14 +252,14 @@ static int json_internal_read_object(const char *cp,
 		break;
 	    else {
 		json_debug_trace((1, "Non-WS when expecting attribute.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_ATTRSTART;
 	    }
 	    break;
 	case in_attr:
 	    if (pattr == NULL) {
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NULLPTR;
 	    }
@@ -291,7 +291,7 @@ static int json_internal_read_object(const char *cp,
 		pval = valbuf;
 	    } else if (pattr >= attrbuf + JSON_ATTR_MAX - 1) {
 		json_debug_trace((1, "Attribute name too long.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_ATTRLEN;
 	    } else
@@ -304,7 +304,7 @@ static int json_internal_read_object(const char *cp,
 		if (cursor->type != t_array) {
 		    json_debug_trace((1,
 				      "Saw [ when not expecting array.\n"));
-		    if (end)
+		    if (end != NULL)
 			*end = cp;
 		    return JSON_ERR_NOARRAY;
 		}
@@ -315,7 +315,7 @@ static int json_internal_read_object(const char *cp,
 	    } else if (cursor->type == t_array) {
 		json_debug_trace((1,
 				  "Array element was specified, but no [.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NOBRAK;
 	    } else if (*cp == '"') {
@@ -331,7 +331,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_val_string:
 	    if (pval == NULL) {
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NULLPTR;
 	    }
@@ -344,7 +344,7 @@ static int json_internal_read_object(const char *cp,
 	    } else if (pval > valbuf + JSON_VAL_MAX - 1
 		       || pval > valbuf + maxlen) {
 		json_debug_trace((1, "String value too long.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_STRLONG;	/*  */
 	    } else
@@ -352,7 +352,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_escape:
 	    if (pval == NULL) {
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NULLPTR;
 	    }
@@ -387,7 +387,7 @@ static int json_internal_read_object(const char *cp,
 	    break;
 	case in_val_token:
 	    if (pval == NULL) {
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NULLPTR;
 	    }
@@ -399,7 +399,7 @@ static int json_internal_read_object(const char *cp,
 		    --cp;
 	    } else if (pval > valbuf + JSON_VAL_MAX - 1) {
 		json_debug_trace((1, "Token value too long.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_TOKLONG;
 	    } else
@@ -440,7 +440,7 @@ static int json_internal_read_object(const char *cp,
 		    && cursor->type != t_ignore && cursor->map == 0)) {
 		json_debug_trace((1,
 				  "Saw quoted value when expecting non-string.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_QNONSTRING;
 	    }
@@ -449,7 +449,7 @@ static int json_internal_read_object(const char *cp,
 		    || cursor->map != 0)) {
 		json_debug_trace((1,
 				  "Didn't see quoted value when expecting string.\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NONQSTRING;
 	    }
@@ -460,7 +460,7 @@ static int json_internal_read_object(const char *cp,
 		    }
 		json_debug_trace((1, "Invalid enumerated value string %s.\n",
 				  valbuf));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_BADENUM;
 	      foundit:
@@ -503,7 +503,7 @@ static int json_internal_read_object(const char *cp,
 		    break;
 		case t_character:
 		    if (strlen(valbuf) > 1) {
-			if (end)
+			if (end != NULL)
 			    *end = cp;
 			return JSON_ERR_STRLONG;
 		    }
@@ -520,7 +520,7 @@ static int json_internal_read_object(const char *cp,
 			json_debug_trace((1,
 					  "Required attribute value %s not present.\n",
 					  cursor->dflt.check));
-			if (end)
+			if (end != NULL)
 			    *end = cp;
 			return JSON_ERR_CHECKFAIL;
 		    }
@@ -537,7 +537,7 @@ static int json_internal_read_object(const char *cp,
 		goto good_parse;
 	    } else {
 		json_debug_trace((1, "Garbage while expecting comma or }\n"));
-		if (end)
+		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_BADTRAIL;
 	    }
