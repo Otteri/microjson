@@ -248,10 +248,8 @@ static int json_internal_read_object(const char *cp,
 	    else if (*cp == '"') {
 		state = in_attr;
 		pattr = attrbuf;
-#ifndef JSON_MINIMAL
 		if (end != NULL)
 		    *end = cp;
-#endif
 	    } else if (*cp == '}')
 		break;
 	    else {
