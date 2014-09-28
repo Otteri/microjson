@@ -71,6 +71,7 @@ PERMISSIONS
 #include <ctype.h>
 #include <errno.h>
 #include <time.h>
+#include <math.h>	/* for HUGE_VAL */
 
 #include "mjson.h"
 
@@ -163,7 +164,9 @@ static double iso8601_to_unix( /*@in@*/ char *isotime)
     struct tm tm;
 
    /*@i1@*/ dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
-    if (dp != NULL && *dp == '.')
+    if (dp == NULL)
+	return (double)HUGE_VAL;
+    if (*dp == '.')
 	usec = strtod(dp, NULL);
     else
 	usec = 0;
@@ -663,6 +666,23 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    else
 		cp = ep;
 	    break;
+#ifdef TIME_ENABLE
+	case t_time:
+	    if (*cp != '"')
+		return JSON_ERR_BADSTRING;
+	    else
+		++cp;
+	    arr->arr.reals.store[offset] = iso8601_to_unix((char *)cp);
+	    if (arr->arr.reals.store[offset] >= HUGE_VAL)
+		return JSON_ERR_BADNUM;
+	    while (*cp && *cp != '"')
+		cp++;
+	    if (*cp != '"')
+		return JSON_ERR_BADSTRING;
+	    else
+		++cp; 
+	    break;
+#endif /* TIME_ENABLE */
 	case t_real:
 	    arr->arr.reals.store[offset] = strtod(cp, &ep);
 	    if (ep == cp)
