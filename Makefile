@@ -28,9 +28,9 @@ check: test_microjson
 	test_microjson
 
 # Worked examples.  These are essentially subsets of the regresion test.
-example1: example1.c mjson.c
-example2: example2.c mjson.c
-example3: example3.c mjson.c
+example1: example1.c mjson.c mjson.h
+example2: example2.c mjson.c mjson.h
+example3: example3.c mjson.c mjson.h
 
 clean:
 	rm -f microjson.o test_microjson.o test_microjson example[123]
