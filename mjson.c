@@ -721,6 +721,8 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	}
     }
     json_debug_trace((1, "Too many elements in array.\n"));
+    if (end != NULL)
+	*end = cp;
     return JSON_ERR_SUBTOOLONG;
   breakout:
     if (arr->count != NULL)
