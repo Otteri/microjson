@@ -289,10 +289,9 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    break;
 	case in_attr:
-	    if (pattr == NULL) {
+	    if (pattr == NULL)
 		/* don't update end here, leave at attribute start */
 		return JSON_ERR_NULLPTR;
-	    }
 	    if (*cp == '"') {
 		*pattr++ = '\0';
 		json_debug_trace((1, "Collected attribute name %s\n",
@@ -360,10 +359,9 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    break;
 	case in_val_string:
-	    if (pval == NULL) {
+	    if (pval == NULL)
 		/* don't update end here, leave at value start */
 		return JSON_ERR_NULLPTR;
-	    }
 	    if (*cp == '\\')
 		state = in_escape;
 	    else if (*cp == '"') {
@@ -379,11 +377,9 @@ static int json_internal_read_object(const char *cp,
 		*pval++ = *cp;
 	    break;
 	case in_escape:
-	    if (pval == NULL) {
-		if (end != NULL)
-		    *end = cp;
+	    if (pval == NULL)
+		/* don't update end here, leave at value start */
 		return JSON_ERR_NULLPTR;
-	    }
 	    switch (*cp) {
 	    case 'b':
 		*pval++ = '\b';
@@ -414,10 +410,9 @@ static int json_internal_read_object(const char *cp,
 	    state = in_val_string;
 	    break;
 	case in_val_token:
-	    if (pval == NULL) {
+	    if (pval == NULL)
 		/* don't update end here, leave at value start */
 		return JSON_ERR_NULLPTR;
-	    }
 	    if (isspace((unsigned char) *cp) || *cp == ',' || *cp == '}') {
 		*pval = '\0';
 		json_debug_trace((1, "Collected token value %s.\n", valbuf));
@@ -530,11 +525,9 @@ static int json_internal_read_object(const char *cp,
 		    }
 		    break;
 		case t_character:
-		    if (strlen(valbuf) > 1) {
-			if (end != NULL)
-			    *end = cp;
+		    if (strlen(valbuf) > 1)
+			/* don't update end here, leave at value start */
 			return JSON_ERR_STRLONG;
-		    }
 		    else
 			lptr[0] = valbuf[0];
 		    break;
