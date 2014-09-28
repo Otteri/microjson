@@ -33,7 +33,7 @@ example2: example2.c mjson.c mjson.h
 example3: example3.c mjson.c mjson.h
 
 clean:
-	rm -f microjson.o test_microjson.o test_microjson example[123]
+	rm -f mjson.o test_microjson.o test_microjson example[123]
 	rm -f microjson.html mjson.html
 
 SUPPRESSIONS = --suppress=unusedStructMember
