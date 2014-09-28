@@ -142,6 +142,12 @@ static int json_tpv_read(const char *buf, struct gps_data_t *gpsdata,
 	{"class",  t_check,   .dflt.check = "TPV"},
 	{"device", t_string,  .addr.string = gpsdata->dev.path,
 			         .len = sizeof(gpsdata->dev.path)},
+#ifdef TIME_ENABLE
+	{"time",   t_time,    .addr.real = &gpsdata->fix.time,
+			         .dflt.real = NAN},
+#else
+	{"time",   t_ignore},
+#endif /* TIME_ENABLE */
 	{"ept",    t_real,    .addr.real = &gpsdata->fix.ept,
 			         .dflt.real = NAN},
 	{"lon",    t_real,    .addr.real = &gpsdata->fix.longitude,
@@ -475,7 +481,8 @@ static void assert_real(char *attr, double fld, double check)
 /* *INDENT-OFF* */
 static const char json_str1[] = "{\"class\":\"TPV\",\
     \"device\":\"GPS#1\",				\
-    \"lon\":46.498203637,\"lat\":7.568074350,\
+    \"time\":\"2005-06-19T12:12:42.03Z\",		\
+    \"lon\":46.498203637,\"lat\":7.568074350,           \
     \"alt\":1327.780,\"epx\":21.000,\"epy\":23.000,\"epv\":124.484,\"mode\":3}";
 
 /* Case 2: SKY report */
@@ -653,6 +660,9 @@ static void jsontest(int i)
 	status = libgps_json_unpack(json_str1, &gpsdata, NULL);
 	assert_case(1, status);
 	assert_string("device", gpsdata.dev.path, "GPS#1");
+#ifdef TIME_ENABLE
+	assert_real("time", gpsdata.fix.time, 1119183162.030000);
+#endif /* TIME_ENABLE */
 	assert_integer("mode", gpsdata.fix.mode, 3);
 	assert_real("lon", gpsdata.fix.longitude, 46.498203637);
 	assert_real("lat", gpsdata.fix.latitude, 7.568074350);
