@@ -6,6 +6,8 @@ CFLAGS = -O
 
 # Add DEBUG_ENABLE for the tracing code
 CFLAGS += -DDEBUG_ENABLE -g
+# Add TIME_ENABLE to support RFC3339 time literals
+CFLAGS += -DTIME_ENABLE
 
 all: mjson.o test_microjson example1 example2 example3
 	@test_microjson

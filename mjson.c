@@ -57,6 +57,12 @@ PERMISSIONS
    BSD terms apply: see the file COPYING in the distribution root for details.
 
 ***************************************************************************/
+/* The strptime prototype is not provided unless explicitly requested.
+ * We also need to set the value high enough to signal inclusion of
+ * newer features (like clock_gettime).  See the POSIX spec for more info:
+ * http://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_02_01_02 */
+#define _XOPEN_SOURCE 600
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -64,6 +70,7 @@ PERMISSIONS
 #include <stdarg.h>
 #include <ctype.h>
 #include <errno.h>
+#include <time.h>
 
 #include "mjson.h"
 
@@ -120,6 +127,7 @@ static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
 	case t_uinteger:
 	    targetaddr = (char *)&cursor->addr.uinteger[offset];
 	    break;
+	case t_time:
 	case t_real:
 	    targetaddr = (char *)&cursor->addr.real[offset];
 	    break;
@@ -145,6 +153,23 @@ static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
 		      cursor->attribute, offset, targetaddr));
     return targetaddr;
 }
+
+#ifdef TIME_ENABLE
+static double iso8601_to_unix( /*@in@*/ char *isotime)
+/* ISO8601 UTC to Unix UTC */
+{
+    char *dp = NULL;
+    double usec;
+    struct tm tm;
+
+   /*@i1@*/ dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
+    if (dp != NULL && *dp == '.')
+	usec = strtod(dp, NULL);
+    else
+	usec = 0;
+    return (double)timegm(&tm) + usec;
+}
+#endif /* TIME_ENABLE */
 
 /*@-immediatetrans -dependenttrans +usereleased +compdef@*/
 
@@ -197,6 +222,7 @@ static int json_internal_read_object(const char *cp,
 		case t_uinteger:
 		    memcpy(lptr, &cursor->dflt.uinteger, sizeof(unsigned int));
 		    break;
+		case t_time:
 		case t_real:
 		    memcpy(lptr, &cursor->dflt.real, sizeof(double));
 		    break;
@@ -286,7 +312,7 @@ static int json_internal_read_object(const char *cp,
 		    maxlen = (int)cursor->len - 1;
 		else if (cursor->type == t_check)
 		    maxlen = (int)strlen(cursor->dflt.check);
-		else if (cursor->type == t_ignore)
+		else if (cursor->type == t_time || cursor->type == t_ignore)
 		    maxlen = JSON_VAL_MAX;
 		else if (cursor->map != NULL)
 		    maxlen = (int)sizeof(valbuf) - 1;
@@ -413,7 +439,7 @@ static int json_internal_read_object(const char *cp,
 	     */
 	    for (;;) {
 		int seeking = cursor->type;
-		if (value_quoted && cursor->type == t_string)
+		if (value_quoted && (cursor->type == t_string || cursor->type == t_time))
 		    break;
 		if ((strcmp(valbuf, "true")==0 || strcmp(valbuf, "false")==0)
 			&& seeking == t_boolean)
@@ -433,7 +459,7 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    if (value_quoted
 		&& (cursor->type != t_string && cursor->type != t_character
-		    && cursor->type != t_check
+		    && cursor->type != t_check && cursor->type != t_time
 		    && cursor->type != t_ignore && cursor->map == 0)) {
 		json_debug_trace((1,
 				  "Saw quoted value when expecting non-string.\n"));
@@ -441,7 +467,7 @@ static int json_internal_read_object(const char *cp,
 	    }
 	    if (!value_quoted
 		&& (cursor->type == t_string || cursor->type == t_check
-		    || cursor->map != 0)) {
+		    || cursor->type == t_time || cursor->map != 0)) {
 		json_debug_trace((1,
 				  "Didn't see quoted value when expecting string.\n"));
 		return JSON_ERR_NONQSTRING;
@@ -471,6 +497,14 @@ static int json_internal_read_object(const char *cp,
 			unsigned int tmp = (unsigned int)atoi(valbuf);
 			memcpy(lptr, &tmp, sizeof(unsigned int));
 		    }
+		    break;
+		case t_time:
+#ifdef TIME_ENABLE
+		    {
+			double tmp = iso8601_to_unix(valbuf);
+			memcpy(lptr, &tmp, sizeof(double));
+		    }
+#endif /* TIME_ENABLE */
 		    break;
 		case t_real:
 		    {
