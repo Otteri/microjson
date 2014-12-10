@@ -5,7 +5,7 @@ unpacked directly into static C structures, without using malloc(3).
 
 microjson is very small and very low-footprint, intended for use in
 constrained embedded environments.  It may also be of interest for
-code where malloc is verboten to reduce reliability and sexurity 
+code where malloc is verboten to reduce reliability and security 
 vulnerabilities.
 
 There's no man page, but there's a tutorial with examples in
