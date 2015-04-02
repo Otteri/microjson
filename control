@@ -10,7 +10,7 @@ Description: Tiny JSON parser in C that uses only fixed-extent storage.
  interest for code where malloc is verboten to reduce reliability and security
  vulnerabilities.
 
-XBS-Gitorious-URL: https://gitorious.org/microjson
+XBS-Repository-URL: http://thyrsus.com/gitweb/?p=microjson.git
 
 Homepage: http://www.catb.org/~esr/microjson
 
