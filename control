@@ -12,6 +12,8 @@ Description: Tiny JSON parser in C that uses only fixed-extent storage.
 
 XBS-Repository-URL: http://thyrsus.com/gitweb/?p=microjson.git
 
+XBS-Clone-From: git@thyrsus.com:microjson
+
 Homepage: http://www.catb.org/~esr/microjson
 
 XBS-HTML-Target: index.html
