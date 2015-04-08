@@ -53,3 +53,6 @@ dist: microjson-$(VERSION).tar.gz
 
 release: microjson-$(VERSION).tar.gz microjson.html mjson.html
 	shipper version=$(VERSION) | sh -e -x
+
+refresh: microjson.html mjson.html
+	shipper -N -w version=$(VERSION) | sh -e -x
