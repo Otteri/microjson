@@ -16,6 +16,10 @@ XBS-HTML-Target: index.html
 
 XBS-Repository-URL: http://thyrsus.com/gitweb/?p=microjson.git
 
+XBS-Developer-Clone: git@thyrsus.com:microjson
+
+XBS-Anonymous-Clone: git://thyrsus.com/repositories/microjson.git
+
 #XBS-Project-Tags: JSON, C
 
 XBS-VC-Tag-Template: %(version)s
