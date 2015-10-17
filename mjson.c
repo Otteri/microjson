@@ -54,7 +54,7 @@ has to be inline in the struct.
 
 PERMISSIONS
    This file is Copyright (c) 2014 by Eric S. Raymond
-   BSD terms apply: see the file COPYING in the distribution root for details.
+   SPDX-License-Identifier: BSD-2-clause
 
 ***************************************************************************/
 /* The strptime prototype is not provided unless explicitly requested.
