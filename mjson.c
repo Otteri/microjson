@@ -515,8 +515,11 @@ static int json_internal_read_object(const char *cp,
 			&& parent->element_type != t_structobject
 			&& offset > 0)
 			return JSON_ERR_NOPARSTR;
-		    (void)strncpy(lptr, valbuf, cursor->len);
-		    valbuf[sizeof(valbuf)-1] = '\0';
+		    else {
+			size_t vl = strlen(valbuf), cl = cursor->len-1;
+			memset(lptr, '\0', cl);
+			memcpy(lptr, valbuf, vl < cl ? vl : cl);
+		    }
 		    break;
 		case t_boolean:
 		    {
