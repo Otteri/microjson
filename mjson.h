@@ -8,6 +8,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef TIME_ENABLE
+#include <time.h>
+#endif /* TIME_ENABLE */
 
 typedef enum {t_integer, t_uinteger, t_real,
 	      t_string, t_boolean, t_character,
@@ -88,6 +91,10 @@ int json_read_array(const char *, const struct json_array_t *,
 		    /*@null@*/const char **);
 const /*@observer@*/char *json_error_string(int);
 
+#ifdef TIME_ENABLE
+extern time_t timegm(struct tm *tm);
+#endif /* TIME_ENABLE */
+    
 void json_enable_debug(int, FILE *);
 #ifdef __cplusplus
 }
