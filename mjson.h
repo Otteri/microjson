@@ -86,10 +86,10 @@ struct json_attr_t {
 extern "C" {
 #endif
 int json_read_object(const char *, const struct json_attr_t *,
-		     /*@null@*/const char **);
+		     const char **);
 int json_read_array(const char *, const struct json_array_t *,
-		    /*@null@*/const char **);
-const /*@observer@*/char *json_error_string(int);
+		    const char **);
+const char *json_error_string(int);
 
 #ifdef TIME_ENABLE
 extern time_t timegm(struct tm *tm);

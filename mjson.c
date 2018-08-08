@@ -106,12 +106,10 @@ static void json_trace(int errlevel, const char *fmt, ...)
 
 # define json_debug_trace(args) (void) json_trace args
 #else
-# define json_debug_trace(args) /*@i1@*/do { } while (0)
+# define json_debug_trace(args) do { } while (0)
 #endif /* DEBUG_ENABLE */
 
-/*@-immediatetrans -dependenttrans -usereleased -compdef@*/
-static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
-					     /*@null@*/
+static char *json_target_address(const struct json_attr_t *cursor,
 					     const struct json_array_t
 					     *parent, int offset)
 {
@@ -156,14 +154,14 @@ static /*@null@*/ char *json_target_address(const struct json_attr_t *cursor,
 }
 
 #ifdef TIME_ENABLE
-static double iso8601_to_unix( /*@in@*/ char *isotime)
+static double iso8601_to_unix(char *isotime)
 /* ISO8601 UTC to Unix UTC */
 {
     char *dp = NULL;
     double usec;
     struct tm tm;
 
-   /*@i1@*/ dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
+    dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
     if (dp == NULL)
 	return (double)HUGE_VAL;
     if (*dp == '.')
@@ -174,16 +172,12 @@ static double iso8601_to_unix( /*@in@*/ char *isotime)
 }
 #endif /* TIME_ENABLE */
 
-/*@-immediatetrans -dependenttrans +usereleased +compdef@*/
-
 static int json_internal_read_object(const char *cp,
 				     const struct json_attr_t *attrs,
-				     /*@null@*/
 				     const struct json_array_t *parent,
 				     int offset,
-				     /*@null@*/ const char **end)
+				     const char **end)
 {
-    /*@ -nullstate -nullderef -mustfreefresh -nullpass -usedef @*/
     enum
     { init, await_attr, in_attr, await_value, in_val_string,
 	in_escape, in_val_token, post_val, post_array
@@ -203,12 +197,6 @@ static int json_internal_read_object(const char *cp,
     unsigned int u;
     const struct json_enum_t *mp;
     char *lptr;
-
-#ifdef S_SPLINT_S
-    /* prevents gripes about buffers not being completely defined */
-    memset(valbuf, '\0', sizeof(valbuf));
-    memset(attrbuf, '\0', sizeof(attrbuf));
-#endif /* S_SPLINT_S */
 
     if (end != NULL)
 	*end = NULL;	/* give it a well-defined value on parse failure */
@@ -589,13 +577,11 @@ static int json_internal_read_object(const char *cp,
 	*end = cp;
     json_debug_trace((1, "JSON parse ends.\n"));
     return 0;
-    /*@ +nullstate +nullderef +mustfreefresh +nullpass +usedef @*/
 }
 
 int json_read_array(const char *cp, const struct json_array_t *arr,
 		    const char **end)
 {
-    /*@-nullstate -onlytrans@*/
     int substatus, offset, arrcount;
     char *tp;
 
@@ -738,16 +724,13 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	*(arr->count) = arrcount;
     if (end != NULL)
 	*end = cp;
-    /*@ -nullderef @*/
     json_debug_trace((1, "leaving json_read_array() with %d elements\n",
 		      arrcount));
-    /*@ +nullderef @*/
     return 0;
-    /*@+nullstate +onlytrans@*/
 }
 
 int json_read_object(const char *cp, const struct json_attr_t *attrs,
-		     /*@null@*/ const char **end)
+		     const char **end)
 {
     int st;
 
@@ -756,7 +739,7 @@ int json_read_object(const char *cp, const struct json_attr_t *attrs,
     return st;
 }
 
-const /*@observer@*/ char *json_error_string(int err)
+const char *json_error_string(int err)
 {
     const char *errors[] = {
 	"unknown error while parsing JSON",

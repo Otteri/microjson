@@ -131,12 +131,10 @@ static struct gps_data_t gpsdata;
  * the (admittedly tricky) way we use endptr. The workaround is to
  * declare it @null@ and use -compdef around the JSON reader calls.
  */
-/*@-compdef@*/
 
 static int json_tpv_read(const char *buf, struct gps_data_t *gpsdata,
-			 /*@null@*/ const char **endptr)
+			 const char **endptr)
 {
-    /*@ -fullinitblock @*/
     const struct json_attr_t json_attrs_1[] = {
 	/* *INDENT-OFF* */
 	{"class",  t_check,   .dflt.check = "TPV"},
@@ -179,16 +177,14 @@ static int json_tpv_read(const char *buf, struct gps_data_t *gpsdata,
 	{NULL},
 	/* *INDENT-ON* */
     };
-    /*@ +fullinitblock @*/
 
     return json_read_object(buf, json_attrs_1, endptr);
 }
 
 static int json_sky_read(const char *buf, struct gps_data_t *gpsdata,
-			 /*@null@*/ const char **endptr)
+			 const char **endptr)
 {
     bool usedflags[MAXCHANNELS];
-    /*@ -fullinitblock @*/
     const struct json_attr_t json_attrs_2_1[] = {
 	/* *INDENT-OFF* */
 	{"PRN",	   t_integer, .addr.integer = gpsdata->PRN},
@@ -225,7 +221,6 @@ static int json_sky_read(const char *buf, struct gps_data_t *gpsdata,
 	{NULL},
 	/* *INDENT-ON* */
     };
-    /*@ +fullinitblock @*/
     int status, i, j;
 
     for (i = 0; i < MAXCHANNELS; i++) {
@@ -253,9 +248,8 @@ static int json_sky_read(const char *buf, struct gps_data_t *gpsdata,
 }
 
 static int json_devicelist_read(const char *buf, struct gps_data_t *gpsdata,
-				/*@null@*/ const char **endptr)
+				const char **endptr)
 {
-    /*@ -fullinitblock @*/
     const struct json_attr_t json_attrs_subdevices[] = {
 	/* *INDENT-OFF* */
 	{"class",      t_check,      .dflt.check = "DEVICE"},
@@ -282,7 +276,6 @@ static int json_devicelist_read(const char *buf, struct gps_data_t *gpsdata,
 	{NULL},
 	/* *INDENT-ON* */
     };
-    /*@-type@*//* STRUCTARRAY confuses splint */
     const struct json_attr_t json_attrs_devices[] = {
 	{"class", t_check,.dflt.check = "DEVICES"},
 	{"devices", t_array, STRUCTARRAY(gpsdata->devices.list,
@@ -290,8 +283,6 @@ static int json_devicelist_read(const char *buf, struct gps_data_t *gpsdata,
 					 &gpsdata->devices.ndevices)},
 	{NULL},
     };
-    /*@+type@*/
-    /*@ +fullinitblock @*/
     int status;
 
     memset(&gpsdata->devices, '\0', sizeof(gpsdata->devices));
@@ -303,12 +294,10 @@ static int json_devicelist_read(const char *buf, struct gps_data_t *gpsdata,
 }
 
 static int json_device_read(const char *buf,
-		     /*@out@*/ struct devconfig_t *dev,
-		     /*@null@*/ const char **endptr)
+		     struct devconfig_t *dev,
+		     const char **endptr)
 {
     char tbuf[JSON_DATE_MAX+1];
-    /*@ -fullinitblock @*/
-    /* *INDENT-OFF* */
     const struct json_attr_t json_attrs_device[] = {
 	{"class",      t_check,      .dflt.check = "DEVICE"},
 
@@ -337,7 +326,6 @@ static int json_device_read(const char *buf,
 	{NULL},
     };
     /* *INDENT-ON* */
-    /*@ +fullinitblock @*/
     int status;
 
     tbuf[0] = '\0';
@@ -349,9 +337,8 @@ static int json_device_read(const char *buf,
 }
 
 static int json_version_read(const char *buf, struct gps_data_t *gpsdata,
-			     /*@null@*/ const char **endptr)
+			     const char **endptr)
 {
-    /*@ -fullinitblock @*/
     const struct json_attr_t json_attrs_version[] = {
 	/* *INDENT-OFF* */
         {"class",     t_check,   .dflt.check = "VERSION"},
@@ -366,7 +353,6 @@ static int json_version_read(const char *buf, struct gps_data_t *gpsdata,
 	{NULL},
 	/* *INDENT-ON* */
     };
-    /*@ +fullinitblock @*/
     int status;
 
     memset(&gpsdata->version, '\0', sizeof(gpsdata->version));
@@ -404,8 +390,6 @@ static int libgps_json_unpack(const char *buf,
     }
 #undef STARTSWITH
 }
-
-/*@+compdef@*/
 
 static void assert_case(int num, int status)
 {
@@ -448,7 +432,6 @@ static void assert_uinteger(char *attr, uint fld, uint check)
 
 static void assert_boolean(char *attr, bool fld, bool check)
 {
-    /*@-boolcompare@*/
     if (fld != check) {
 	(void)fprintf(stderr,
 		      "'%s' expecting boolean %s, got %s.\n",
@@ -457,7 +440,6 @@ static void assert_boolean(char *attr, bool fld, bool check)
 		      fld ? "true" : "false");
 	exit(EXIT_FAILURE);
     }
-    /*@+boolcompare@*/
 }
 
 /*
@@ -473,8 +455,6 @@ static void assert_real(char *attr, double fld, double check)
 	exit(EXIT_FAILURE);
     }
 }
-
-/*@ -fullinitblock @*/
 
 /* Case 1: TPV report */
 
@@ -505,7 +485,6 @@ static char *stringptrs[3];
 static char stringstore[256];
 static int stringcount;
 
-/*@-type@*/
 static const struct json_array_t json_array_3 = {
     .element_type = t_string,
     .arr.strings.ptrs = stringptrs,
@@ -514,7 +493,6 @@ static const struct json_array_t json_array_3 = {
     .count = &stringcount,
     .maxlen = sizeof(stringptrs)/sizeof(stringptrs[0]),
 };
-/*@+type@*/
 
 /* Case 4: test defaulting of unspecified attributes */
 
@@ -558,7 +536,6 @@ struct dumbstruct_t {
 static struct dumbstruct_t dumbstruck[5];
 static int dumbcount;
 
-/*@-type@*/
 static const struct json_attr_t json_attrs_6_subtype[] = {
     {"name",  t_string,  .addr.offset = offsetof(struct dumbstruct_t, name),
                          .len = 64},
@@ -576,7 +553,6 @@ static const struct json_attr_t json_attrs_6[] = {
                        .addr.array.maxlen = sizeof(dumbstruck)/sizeof(dumbstruck[0])},
     {NULL},
 };
-/*@+type@*/
 
 /* Case 7: test parsing of version response */
 
@@ -608,14 +584,12 @@ static const char *json_str9 = "{\"parts\":[]}";
 static const char *json_str10 = "[23,-17,5]";
 static int intstore[4], intcount;
 
-/*@-type@*/
 static const struct json_array_t json_array_10 = {
     .element_type = t_integer,
     .arr.integers.store = intstore,
     .count = &intcount,
     .maxlen = sizeof(intstore)/sizeof(intstore[0]),
 };
-/*@+type@*/
 
 /* Case 11: Read array of booleans */
 
@@ -623,14 +597,12 @@ static const char *json_str11 = "[true,false,true]";
 static bool boolstore[4];
 static int boolcount;
 
-/*@-type@*/
 static const struct json_array_t json_array_11 = {
     .element_type = t_boolean,
     .arr.booleans.store = boolstore,
     .count = &boolcount,
     .maxlen = sizeof(boolstore)/sizeof(boolstore[0]),
 };
-/*@+type@*/
 
 /* Case 12: Read array of reals */
 
@@ -638,16 +610,13 @@ static const char *json_str12 = "[23.1,-17.2,5.3]";
 static double realstore[4]; 
 static int realcount;
 
-/*@-type@*/
 static const struct json_array_t json_array_12 = {
     .element_type = t_real,
     .arr.reals.store = realstore,
     .count = &realcount,
     .maxlen = sizeof(realstore)/sizeof(realstore[0]),
 };
-/*@+type@*/
 
-/*@ +fullinitblock @*/
 /* *INDENT-ON* */
 
 static void jsontest(int i)
