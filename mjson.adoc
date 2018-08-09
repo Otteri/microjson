@@ -1,4 +1,4 @@
-= mjson(1) =
+= mjson(3) =
 :doctype: manpage
 
 == NAME ==
