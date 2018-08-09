@@ -183,6 +183,11 @@ The following cases do not parse JSON value atoms:
 t_ignore: Value of this attribute is ignored.  Significant because
 unexpected attribute names cause the parse to terminate with error.
 
+==== Sub-objects ====
+
+t_object: It is possible to parse JSON objects within JSON objects.
+See case 14 in the unit test for an example.
+
 ==== Parallel arrays ===
 
 t_array: Value of this attribute is expected to be a homogenous array.
@@ -389,8 +394,10 @@ The dialect this parses has some limitations.  First, it cannot
 recognize the JSON "null" value. Second, all elements of an array must
 be of the same type. Third, t_character may not be an array element
 (this restriction could be lifted, and might be in a future release).
+Third, both attribute names and string values have hard limits; these
+can be tweaked by modifying the header file.
 
-There are separate entry points for beginning a parse of either JSON
+There are separate entry points for beginning a parse of either a JSON
 object or a JSON array. 
 
 JSON "float" quantities are actually stored as doubles.  Note that
