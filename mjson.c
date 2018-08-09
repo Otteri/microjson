@@ -588,8 +588,8 @@ static int json_internal_read_object(const char *cp,
 		    break;
 		case t_check:
 		    if (strcmp(cursor->dflt.check, valbuf) != 0) {
-			json_debug_trace((1,
-					  "Required attribute value %s not present.\n",
+			json_debug_trace((1, "Required attribute value %s"
+                                          " not present.\n",
 					  cursor->dflt.check));
 			/* don't update end here, leave at start of attribute */
 			return JSON_ERR_CHECKFAIL;
@@ -701,7 +701,8 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		cp = ep;
 	    break;
 	case t_uinteger:
-	    arr->arr.uintegers.store[offset] = (unsigned int)strtoul(cp, &ep, 0);
+	    arr->arr.uintegers.store[offset] = (unsigned int)strtoul(cp,
+                                                                     &ep, 0);
 	    if (ep == cp)
 		return JSON_ERR_BADNUM;
 	    else
@@ -735,7 +736,7 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    if (*cp != '"')
 		return JSON_ERR_BADSTRING;
 	    else
-		++cp; 
+		++cp;
 	    break;
 #endif /* TIME_ENABLE */
 	case t_real:
