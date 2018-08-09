@@ -14,7 +14,7 @@ Homepage: http://www.catb.org/~esr/microjson
 
 XBS-HTML-Target: index.html
 
-XBS-Repository-URL: http://thyrsus.com/gitweb/?p=microjson.git
+XBS-Repository-URL: https://gitlab.com/esr/microjson
 
 #XBS-Project-Tags: JSON, C
 
