@@ -126,6 +126,12 @@ static char *json_target_address(const struct json_attr_t *cursor,
 	case t_uinteger:
 	    targetaddr = (char *)&cursor->addr.uinteger[offset];
 	    break;
+	case t_short:
+	    targetaddr = (char *)&cursor->addr.shortint[offset];
+	    break;
+	case t_ushort:
+	    targetaddr = (char *)&cursor->addr.ushortint[offset];
+	    break;
 	case t_time:
 	case t_real:
 	    targetaddr = (char *)&cursor->addr.real[offset];
@@ -212,6 +218,13 @@ static int json_internal_read_object(const char *cp,
 		    break;
 		case t_uinteger:
 		    memcpy(lptr, &cursor->dflt.uinteger, sizeof(unsigned int));
+		    break;
+		case t_short:
+		    memcpy(lptr, &cursor->dflt.shortint, sizeof(short));
+		    break;
+		case t_ushort:
+		    memcpy(lptr, &cursor->dflt.ushortint,
+		           sizeof(unsigned short));
 		    break;
 		case t_time:
 		case t_real:
@@ -497,6 +510,18 @@ static int json_internal_read_object(const char *cp,
 			memcpy(lptr, &tmp, sizeof(unsigned int));
 		    }
 		    break;
+		case t_short:
+		    {
+			short tmp = atoi(valbuf);
+			memcpy(lptr, &tmp, sizeof(short));
+		    }
+		    break;
+		case t_ushort:
+		    {
+			unsigned short tmp = (unsigned int)atoi(valbuf);
+			memcpy(lptr, &tmp, sizeof(unsigned short));
+		    }
+		    break;
 		case t_time:
 #ifdef TIME_ENABLE
 		    {
@@ -661,6 +686,20 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    else
 		cp = ep;
 	    break;
+	case t_short:
+	    arr->arr.shorts.store[offset] = (short)strtol(cp, &ep, 0);
+ 	    if (ep == cp)
+ 		return JSON_ERR_BADNUM;
+ 	    else
+ 		cp = ep;
+ 	    break;
+	case t_ushort:
+	    arr->arr.ushorts.store[offset] = (unsigned short)strtol(cp, &ep, 0);
+ 	    if (ep == cp)
+ 		return JSON_ERR_BADNUM;
+ 	    else
+ 		cp = ep;
+ 	    break;
 #ifdef TIME_ENABLE
 	case t_time:
 	    if (*cp != '"')
