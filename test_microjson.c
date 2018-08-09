@@ -641,7 +641,7 @@ static void jsontest(int i)
     {
     case 1:
 	status = libgps_json_unpack(json_str1, &gpsdata, NULL);
-	assert_case(1, status);
+	assert_case(i, status);
 	assert_string("device", gpsdata.dev.path, "GPS#1");
 #ifdef TIME_ENABLE
 	assert_real("time", gpsdata.fix.time, 1119183162.030000);
@@ -653,7 +653,7 @@ static void jsontest(int i)
 
     case 2:
 	status = libgps_json_unpack(json_str2, &gpsdata, NULL);
-	assert_case(2, status);
+	assert_case(i, status);
 	assert_integer("used", gpsdata.satellites_used, 6);
 	assert_integer("PRN[0]", gpsdata.PRN[0], 10);
 	assert_integer("el[0]", gpsdata.elevation[0], 45);
@@ -669,7 +669,7 @@ static void jsontest(int i)
 
     case 3:
 	status = json_read_array(json_str3, &json_array_3, NULL);
-	assert_case(3, status);
+	assert_case(i, status);
 	assert(stringcount == 3);
 	assert(strcmp(stringptrs[0], "foo") == 0);
 	assert(strcmp(stringptrs[1], "bar") == 0);
@@ -678,7 +678,7 @@ static void jsontest(int i)
 
     case 4:
 	status = json_read_object(json_str4, json_attrs_4, NULL);
-	assert_case(4, status);
+	assert_case(i, status);
 	assert_integer("dftint", dftinteger, -5);	/* did the default work? */
 	assert_uinteger("dftuint", dftuinteger, 10);	/* did the default work? */
 	assert_real("dftreal", dftreal, 23.17);	/* did the default work? */
@@ -688,7 +688,7 @@ static void jsontest(int i)
 
     case 5:
 	status = libgps_json_unpack(json_str5, &gpsdata, NULL);
-	assert_case(5, status);
+	assert_case(i, status);
 	assert_string("path", gpsdata.dev.path, "/dev/ttyUSB0");
 	assert_integer("flags", gpsdata.dev.flags, 5);
 	assert_string("driver", gpsdata.dev.driver, "Foonly");
@@ -696,7 +696,7 @@ static void jsontest(int i)
 
     case 6:
 	status = json_read_object(json_str6, json_attrs_6, NULL);
-	assert_case(6, status);
+	assert_case(i, status);
 	assert_integer("dumbcount", dumbcount, 4);
 	assert_string("dumbstruck[0].name", dumbstruck[0].name, "Urgle");
 	assert_string("dumbstruck[1].name", dumbstruck[1].name, "Burgle");
@@ -714,7 +714,7 @@ static void jsontest(int i)
 
     case 7:
 	status = libgps_json_unpack(json_str7, &gpsdata, NULL);
-	assert_case(7, status);
+	assert_case(i, status);
 	assert_string("release", gpsdata.version.release, "2.40dev");
 	assert_string("rev", gpsdata.version.rev, "dummy-revision");
 	assert_integer("proto_major", gpsdata.version.proto_major, 3);
@@ -723,7 +723,7 @@ static void jsontest(int i)
 
     case 8:
 	status = json_read_object(json_str8, json_attrs_8, NULL);
-	assert_case(8, status);
+	assert_case(i, status);
 	assert_integer("fee", fee, 3);
 	assert_integer("fie", fie, 6);
 	assert_integer("foe", foe, 14);
@@ -732,7 +732,7 @@ static void jsontest(int i)
     case 9:
 	/* yes, the '6' in the next line is correct */ 
 	status = json_read_object(json_str9, json_attrs_6, NULL);
-	assert_case(9, status);
+	assert_case(i, status);
 	assert_integer("dumbcount", dumbcount, 0);
 	break;
 
