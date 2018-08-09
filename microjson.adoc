@@ -24,7 +24,7 @@ into static locations specified in the template structures.
 
 This is a fast tutorial for working programmers.  It teaches by
 examples; if you read the code carefully it will tell you 
-more than the accompanying test. Just read it in sequence, trying not
+more than the accompanying text. Just read it in sequence, trying not
 to skip anything.
 
 All the examples are shipped in the microjson distribution.  They are
@@ -402,8 +402,7 @@ doubt, set the C numeric locale explicitly to match your data source.
 
 This code is designed to be stripped down still further; do not be
 afraid to copy mjson.c and drop out the parts you don't need (but
-please leave in my name somewhere as original author).  The GPSD
-instance conditions out the support for arrays of ints/reals/bools.
+please leave in my name somewhere as original author).
 
 It is a good idea, when possible, to generate your parse-template
 structures programmatically from a higher-level description of the
