@@ -1,5 +1,8 @@
 			microjson project news
 
+Repository head:
+   It's now possible to read objects inside of objects (not just in arrays).
+
 1.4: 2018-08-09
    Add a belt-and suspenders bounds check side-ported from the GPSD code.
 

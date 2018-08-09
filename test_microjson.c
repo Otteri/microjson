@@ -631,6 +631,25 @@ static const struct json_array_t json_array_12 = {
     .maxlen = sizeof(realstore)/sizeof(realstore[0]),
 };
 
+/* Case 14: Read object within object */
+
+char json_inner_name_string_dst[56];
+int inner_value;
+static const char *json_str14 = "{\"name\":\"wobble\",\"value\":{\"inner\":23}}";
+const struct json_attr_t json_inner_int_value[] = {
+    {"inner", t_integer,
+         .addr.integer = &inner_value},
+    {NULL},
+};
+static const struct json_attr_t json_object_14[] = {
+    {"name", t_string,
+        .addr.string = json_inner_name_string_dst,
+        .len = sizeof(json_inner_name_string_dst)},
+    {"value", t_object,
+         .addr.attrs = json_inner_int_value},
+    {NULL},
+};
+
 /* *INDENT-ON* */
 
 static void jsontest(int i)
@@ -769,7 +788,14 @@ static void jsontest(int i)
 	assert_real("realstore[3]", realstore[3], 0);
 	break;
 
-#define MAXTEST 13
+    case 14:
+	status = json_read_object(json_str14, json_object_14, NULL);
+	assert_case(i, status);
+	assert_integer("inner", inner_value, 23);
+	assert_string("name", json_inner_name_string_dst, "wobble");
+	break;
+	
+#define MAXTEST 14
 
     default:
 	(int)fputs("Unknown test number\n", stderr);

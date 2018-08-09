@@ -186,12 +186,12 @@ static int json_internal_read_object(const char *cp,
 {
     enum
     { init, await_attr, in_attr, await_value, in_val_string,
-	in_escape, in_val_token, post_val, post_array
+	in_escape, in_val_token, post_val, post_element
     } state = 0;
 #ifdef DEBUG_ENABLE
     char *statenames[] = {
 	"init", "await_attr", "in_attr", "await_value", "in_val_string",
-	"in_escape", "in_val_token", "post_val", "post_array",
+	"in_escape", "in_val_token", "post_val", "post_element",
     };
 #endif /* DEBUG_ENABLE */
     char attrbuf[JSON_ATTR_MAX + 1], *pattr = NULL;
@@ -342,13 +342,31 @@ static int json_internal_read_object(const char *cp,
 		substatus = json_read_array(cp, &cursor->addr.array, &cp);
 		if (substatus != 0)
 		    return substatus;
-		state = post_array;
+		state = post_element;
 	    } else if (cursor->type == t_array) {
 		json_debug_trace((1,
 				  "Array element was specified, but no [.\n"));
 		if (end != NULL)
 		    *end = cp;
 		return JSON_ERR_NOBRAK;
+	    } else if (*cp == '{') {
+		if (cursor->type != t_object) {
+		    json_debug_trace((1,
+				      "Saw { when not expecting object.\n"));
+		    if (end != NULL)
+			*end = cp;
+		    return JSON_ERR_NOARRAY;
+		}
+		substatus = json_read_object(cp, cursor->addr.attrs, &cp);
+		if (substatus != 0)
+		    return substatus;
+		state = post_element;
+	    } else if (cursor->type == t_object) {
+		json_debug_trace((1,
+				  "Object element was specified, but no {.\n"));
+		if (end != NULL)
+		    *end = cp;
+		return JSON_ERR_NOCURLY;
 	    } else if (*cp == '"') {
 		value_quoted = true;
 		state = in_val_string;
@@ -577,7 +595,7 @@ static int json_internal_read_object(const char *cp,
 		    break;
 		}
 	    __attribute__ ((fallthrough));
-	case post_array:
+	case post_element:
 	    if (isspace((unsigned char) *cp))
 		continue;
 	    else if (*cp == ',')
@@ -805,6 +823,7 @@ const char *json_error_string(int err)
 	"didn't see quoted value when expecting string",
 	"other data conversion error",
 	"unexpected null value or attribute pointer",
+	"object element specified, but no {",
     };
 
     if (err <= 0 || err >= (int)(sizeof(errors) / sizeof(errors[0])))

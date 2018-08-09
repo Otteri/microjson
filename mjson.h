@@ -70,7 +70,8 @@ struct json_attr_t {
 	char *string;
 	bool *boolean;
 	char *character;
-	struct json_array_t array;
+	const struct json_attr_t *attrs;
+	const struct json_array_t array;
 	size_t offset;
     } addr;
     union {
@@ -132,6 +133,7 @@ void json_enable_debug(int, FILE *);
 #define JSON_ERR_MISC		20	/* other data conversion error */
 #define JSON_ERR_BADNUM		21	/* error while parsing a numerical argument */
 #define JSON_ERR_NULLPTR	22	/* unexpected null value or attribute pointer */
+#define JSON_ERR_NOCURLY	23	/* object element specified, but no { */
 
 /*
  * Use the following macros to declare template initializers for structobject
