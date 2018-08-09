@@ -1,6 +1,7 @@
 /* test_mjson.c - unit test for JSON parsing into fixed-extent structures
  *
- * This file is Copyright (c) 2010 by the GPSD project
+ * This file is Copyright (c) 2014 by Eric S. Raymond
+ * SPDX-License-Identifier: BSD-2-Clause
  * BSD terms apply: see the file COPYING in the distribution root for details.
  */
 
@@ -124,13 +125,6 @@ struct gps_data_t {
 };
 
 static struct gps_data_t gpsdata;
-
-/*
- * There's a splint limitation that parameters can be declared
- * @out@ or @null@ but not, apparently, both.  This collides with
- * the (admittedly tricky) way we use endptr. The workaround is to
- * declare it @null@ and use -compdef around the JSON reader calls.
- */
 
 static int json_tpv_read(const char *buf, struct gps_data_t *gpsdata,
 			 const char **endptr)
@@ -391,13 +385,20 @@ static int libgps_json_unpack(const char *buf,
 #undef STARTSWITH
 }
 
-static void assert_case(int num, int status)
+static int assert_error_case(int num, int status, int error)
 {
-    if (status != 0) {
+    if (status != error) {
 	(void)fprintf(stderr, "case %d FAILED, status %d (%s).\n", num,
 		      status, json_error_string(status));
 	exit(EXIT_FAILURE);
     }
+    else
+	return 0;
+}
+
+static void assert_case(int num, int status)
+{
+    assert_error_case(num, status, 0);
 }
 
 static void assert_string(char *attr, char *fld, char *check)
@@ -579,7 +580,20 @@ static const struct json_attr_t json_attrs_8[] = {
 
 static const char *json_str9 = "{\"parts\":[]}";
 
-/* Case 10: Read array of integers */
+/* Case 10: test buffer overflow of short string destination */
+
+// static char json_strErr2[7 * JSON_VAL_MAX];  /* dynamically built */
+static char *json_strOver = "{\"name\":\"\\u0033\\u0034\\u0035\\u0036\"}";
+
+char json_short_string_dst[1];
+static const struct json_attr_t json_short_string[] = {
+    {"name", t_string,
+        .addr.string = json_short_string_dst,
+        .len = sizeof(json_short_string_dst)},
+    {NULL},
+};
+ 
+/* Case 11: Read array of integers */
 
 static const char *json_str10 = "[23,-17,5]";
 static int intstore[4], intcount;
@@ -591,7 +605,7 @@ static const struct json_array_t json_array_10 = {
     .maxlen = sizeof(intstore)/sizeof(intstore[0]),
 };
 
-/* Case 11: Read array of booleans */
+/* Case 12: Read array of booleans */
 
 static const char *json_str11 = "[true,false,true]";
 static bool boolstore[4];
@@ -604,7 +618,7 @@ static const struct json_array_t json_array_11 = {
     .maxlen = sizeof(boolstore)/sizeof(boolstore[0]),
 };
 
-/* Case 12: Read array of reals */
+/* Case 13: Read array of reals */
 
 static const char *json_str12 = "[23.1,-17.2,5.3]";
 static double realstore[4]; 
@@ -723,6 +737,12 @@ static void jsontest(int i)
 	break;
 
     case 10:
+	status = json_read_object(json_strOver, json_short_string, NULL);
+	status = assert_error_case(10, status, JSON_ERR_STRLONG);
+	assert_string("name", json_short_string_dst, "");
+ 	break;
+
+    case 11:
 	status = json_read_array(json_str10, &json_array_10, NULL);
 	assert_integer("count", intcount, 3);
 	assert_integer("intstore[0]", intstore[0], 23);
@@ -731,7 +751,7 @@ static void jsontest(int i)
 	assert_integer("intstore[3]", intstore[3], 0);
 	break;
 
-    case 11:
+    case 12:
 	status = json_read_array(json_str11, &json_array_11, NULL);
 	assert_integer("count", boolcount, 3);
 	assert_boolean("boolstore[0]", boolstore[0], true);
@@ -740,7 +760,7 @@ static void jsontest(int i)
 	assert_boolean("boolstore[3]", boolstore[3], false);
 	break;
 
-    case 12:
+    case 13:
 	status = json_read_array(json_str12, &json_array_12, NULL);
 	assert_integer("count", realcount, 3);
 	assert_real("realstore[0]", realstore[0], 23.1);
@@ -749,7 +769,7 @@ static void jsontest(int i)
 	assert_real("realstore[3]", realstore[3], 0);
 	break;
 
-#define MAXTEST 12
+#define MAXTEST 13
 
     default:
 	(int)fputs("Unknown test number\n", stderr);
