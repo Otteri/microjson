@@ -75,6 +75,8 @@ PERMISSIONS
 
 #include "mjson.h"
 
+#define str_starts_with(s, p)	(strncmp(s, p, strlen(p)))
+
 #ifdef DEBUG_ENABLE
 static int debuglevel = 0;
 static FILE *debugfp;
@@ -744,11 +746,11 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 		cp = ep;
 	    break;
 	case t_boolean:
-	    if (strncmp(cp, "true", 4) == 0) {
+	    if (str_starts_with(cp, "true") == 0) {
 		arr->arr.booleans.store[offset] = true;
 		cp += 4;
 	    }
-	    else if (strncmp(cp, "false", 5) == 0) {
+	    else if (str_starts_with(cp, "false") == 0) {
 		arr->arr.booleans.store[offset] = false;
 		cp += 5;
 	    }
