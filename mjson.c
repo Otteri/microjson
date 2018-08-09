@@ -165,11 +165,10 @@ static char *json_target_address(const struct json_attr_t *cursor,
 static double iso8601_to_unix(char *isotime)
 /* ISO8601 UTC to Unix UTC */
 {
-    char *dp = NULL;
     double usec;
     struct tm tm;
 
-    dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
+    char *dp = strptime(isotime, "%Y-%m-%dT%H:%M:%S", &tm);
     if (dp == NULL)
 	return (double)HUGE_VAL;
     if (*dp == '.')
