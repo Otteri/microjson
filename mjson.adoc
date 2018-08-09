@@ -31,9 +31,10 @@ at a template structure describing the array's element type and where
 successive elements are to be placed. The third argument, if non-null,
 is where a copy of a pointer to just past the parsed object is placed.
 
-Objects may contain arrays as attribute values, and an array may be
-composed of JSON objects.  These functions mutually recurse as
-required.
+Objects may contain objects or arrays as attribute values, and an
+array may be composed of JSON objects.  These functions mutually
+recurse as required. (Arrays within arrays are currently not
+supported; this may change in a future release.)
 
 +void json_enable_debug(int, FILE *)+ enables the generation of trace
 messages to the indicated file pointer while parsing.

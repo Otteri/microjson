@@ -631,7 +631,7 @@ static const struct json_array_t json_array_13 = {
     .maxlen = sizeof(realstore)/sizeof(realstore[0]),
 };
 
-/* Case 14: Read object within object */
+/* Case 14: Read object within object. Test case not derived from GPSD */
 
 char json_inner_name_string_dst[JSON_VAL_MAX];
 int inner_value;

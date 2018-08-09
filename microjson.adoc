@@ -405,6 +405,9 @@ float parsing uses +atof(3)+ and is thus locale-sensitive - this
 affects whether period or comma is used as a decimal point.  If in any
 doubt, set the C numeric locale explicitly to match your data source.
 
+You should not assume that the numeric values of error codes are
+stable. Use the JSON_ERR_* names, not the numbers.
+
 == Advanced Usage ==
 
 This code is designed to be stripped down still further; do not be
