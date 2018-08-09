@@ -595,10 +595,10 @@ static const struct json_attr_t json_short_string[] = {
  
 /* Case 11: Read array of integers */
 
-static const char *json_str10 = "[23,-17,5]";
+static const char *json_str11 = "[23,-17,5]";
 static int intstore[4], intcount;
 
-static const struct json_array_t json_array_10 = {
+static const struct json_array_t json_array_11 = {
     .element_type = t_integer,
     .arr.integers.store = intstore,
     .count = &intcount,
@@ -607,11 +607,11 @@ static const struct json_array_t json_array_10 = {
 
 /* Case 12: Read array of booleans */
 
-static const char *json_str11 = "[true,false,true]";
+static const char *json_str12 = "[true,false,true]";
 static bool boolstore[4];
 static int boolcount;
 
-static const struct json_array_t json_array_11 = {
+static const struct json_array_t json_array_12 = {
     .element_type = t_boolean,
     .arr.booleans.store = boolstore,
     .count = &boolcount,
@@ -620,11 +620,11 @@ static const struct json_array_t json_array_11 = {
 
 /* Case 13: Read array of reals */
 
-static const char *json_str12 = "[23.1,-17.2,5.3]";
+static const char *json_str13 = "[23.1,-17.2,5.3]";
 static double realstore[4]; 
 static int realcount;
 
-static const struct json_array_t json_array_12 = {
+static const struct json_array_t json_array_13 = {
     .element_type = t_real,
     .arr.reals.store = realstore,
     .count = &realcount,
@@ -633,7 +633,7 @@ static const struct json_array_t json_array_12 = {
 
 /* Case 14: Read object within object */
 
-char json_inner_name_string_dst[56];
+char json_inner_name_string_dst[JSON_VAL_MAX];
 int inner_value;
 static const char *json_str14 = "{\"name\":\"wobble\",\"value\":{\"inner\":23}}";
 const struct json_attr_t json_inner_int_value[] = {
@@ -762,7 +762,7 @@ static void jsontest(int i)
  	break;
 
     case 11:
-	status = json_read_array(json_str10, &json_array_10, NULL);
+	status = json_read_array(json_str11, &json_array_11, NULL);
 	assert_integer("count", intcount, 3);
 	assert_integer("intstore[0]", intstore[0], 23);
 	assert_integer("intstore[1]", intstore[1], -17);
@@ -771,7 +771,7 @@ static void jsontest(int i)
 	break;
 
     case 12:
-	status = json_read_array(json_str11, &json_array_11, NULL);
+	status = json_read_array(json_str12, &json_array_12, NULL);
 	assert_integer("count", boolcount, 3);
 	assert_boolean("boolstore[0]", boolstore[0], true);
 	assert_boolean("boolstore[1]", boolstore[1], false);
@@ -780,7 +780,7 @@ static void jsontest(int i)
 	break;
 
     case 13:
-	status = json_read_array(json_str12, &json_array_12, NULL);
+	status = json_read_array(json_str13, &json_array_13, NULL);
 	assert_integer("count", realcount, 3);
 	assert_real("realstore[0]", realstore[0], 23.1);
 	assert_real("realstore[1]", realstore[1], -17.2);
