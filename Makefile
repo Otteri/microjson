@@ -17,13 +17,13 @@ mjson.o: mjson.c mjson.h
 test_microjson: test_microjson.o mjson.o
 	$(CC) $(CFLAGS) -o test_microjson test_microjson.o mjson.o
 
-.SUFFIXES: .html .asc .3
+.SUFFIXES: .html .adoc .3
 
 # Requires asciidoc and xsltproc/docbook stylesheets.
-.asc.html:
-	asciidoc $*.asc
-.asc.3:
-	a2x --doctype manpage --format manpage $*.asc
+.adoc.html:
+	asciidoc $*.adoc
+.adoc.3:
+	a2x --doctype manpage --format manpage $*.adoc
 
 # Regression test
 check: test_microjson
@@ -44,7 +44,7 @@ cppcheck:
 	cppcheck -I. --template gcc --enable=all $() $(SUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
-DOCS = README COPYING NEWS control microjson.asc mjson.asc
+DOCS = README COPYING NEWS control microjson.adoc mjson.adoc
 ALL =  $(SOURCES) $(DOCS)
 microjson-$(VERSION).tar.gz: $(ALL)
 	tar --transform='s:^:microjson-$(VERSION)/:' --show-transformed-names -cvzf microjson-$(VERSION).tar.gz $(ALL)
