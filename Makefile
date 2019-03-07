@@ -44,7 +44,7 @@ cppcheck:
 	cppcheck -I. --template gcc --enable=all $() $(SUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
-DOCS = README COPYING NEWS control microjson.adoc mjson.adoc
+DOCS = README.adoc COPYING NEWS.adoc control microjson.adoc mjson.adoc
 ALL =  $(SOURCES) $(DOCS)
 microjson-$(VERSION).tar.gz: $(ALL)
 	tar --transform='s:^:microjson-$(VERSION)/:' --show-transformed-names -cvzf microjson-$(VERSION).tar.gz $(ALL)

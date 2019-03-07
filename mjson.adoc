@@ -5,6 +5,8 @@
 mjson - fast parse of JSON to fixed-extent C structures
 
 == FUNCTIONS ==
+
+----------------------------------------------------
 #include "mjson.h"
 
 int json_read_object(const char *, const struct json_attr_t *, const char **);
@@ -14,6 +16,7 @@ int json_read_array(const char *, const struct json_array_t *, const char **);
 const char *json_error_string(int);
 
 void json_enable_debug(int, FILE *);
+----------------------------------------------------
 
 == DESCRIPTION ==
 +json_read_object()+ attempts to parse a whole JSON object from the
