@@ -1,5 +1,8 @@
 = microjson project news =
 
+head: 2019-08-18::
+   It's now possible to match all previously unspecified fields ignored.
+
 1.5: 2019-03-06::
    It's now possible to read objects inside of objects (not just in arrays).
 

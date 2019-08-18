@@ -17,6 +17,9 @@ mjson.o: mjson.c mjson.h
 test_microjson: test_microjson.o mjson.o
 	$(CC) $(CFLAGS) -o test_microjson test_microjson.o mjson.o
 
+test_microjson_wignore: test_microjson_wignore.o mjson.o
+	$(CC) $(CFLAGS) -o test_microjson_wignore test_microjson_wignore.o mjson.o
+
 .SUFFIXES: .html .adoc .3
 
 # Requires asciidoc and xsltproc/docbook stylesheets.
@@ -26,8 +29,9 @@ test_microjson: test_microjson.o mjson.o
 	a2x --doctype manpage --format manpage $*.adoc
 
 # Regression test
-check: test_microjson
+check: test_microjson test_microjson_wignore
 	./test_microjson
+	./test_microjson_wignore
 
 # Worked examples.  These are essentially subsets of the regresion test.
 example1: example1.c mjson.c mjson.h

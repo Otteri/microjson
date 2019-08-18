@@ -2,3 +2,4 @@
 *.html
 test_microjson
 example[123]
+test_microjson_wignore

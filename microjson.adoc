@@ -115,6 +115,7 @@ driving the parse. The type tells it how to interpret the
 value; the target address tells it where to put the value.
 
 Syntax errors, or any unknown attribute name, terminate the parse.
+That is unless the wildcard ignore option is used.
 
 One consequence to be aware of is that if an input JSON object 
 contains multiple attribute-value pairs with the same attribute,
@@ -182,6 +183,9 @@ The following cases do not parse JSON value atoms:
 
 t_ignore: Value of this attribute is ignored.  Significant because
 unexpected attribute names cause the parse to terminate with error.
+An empty attribute name may be used to wildcard ignore all unknown
+fields. This should rarely be used and always as penultimate to the
+terminating NULL.
 
 ==== Sub-objects ====
 
