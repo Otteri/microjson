@@ -5,6 +5,7 @@
  */
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <ctype.h>
 #ifdef TIME_ENABLE
 #include <time.h>
