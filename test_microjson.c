@@ -650,6 +650,23 @@ static const struct json_attr_t json_object_14[] = {
     {NULL},
 };
 
+/* Case 15: test parsing 0/1 integer values as bool */
+
+static bool flag3;
+static bool flags4[3];
+
+static const char *json_str15 = "{\"flag1\":1, \"flag2\":0, \"flag3\":7, \"flags4\":[1,0,7]}";
+
+static const struct json_attr_t json_attrs_15[] = {
+    {"flag1",       t_boolean,	.addr.boolean = &flag1,},
+    {"flag2",       t_boolean,	.addr.boolean = &flag2,},
+    {"flag3",       t_boolean,	.addr.boolean = &flag3,},
+    {"flags4",      t_array,	.addr.array.element_type = t_boolean,
+				.addr.array.arr.booleans = flags4,
+				.addr.array.maxlen = 3,},
+    {NULL},
+};
+
 /* *INDENT-ON* */
 
 static void jsontest(int i)
@@ -794,8 +811,19 @@ static void jsontest(int i)
 	assert_integer("inner", inner_value, 23);
 	assert_string("name", json_inner_name_string_dst, "wobble");
 	break;
+
+    case 15:
+	status = json_read_object(json_str15, json_attrs_15, NULL);
+	assert_case(i, status);
+	assert_boolean("flag1", flag1, true);
+	assert_boolean("flag2", flag2, false);
+	assert_boolean("flag3", flag3, true);
+	assert_boolean("flags4[0]", flags4[0], true);
+	assert_boolean("flags4[1]", flags4[1], false);
+	assert_boolean("flags4[2]", flags4[2], true);
+	break;
 	
-#define MAXTEST 14
+#define MAXTEST 15
 
     default:
 	(void)fputs("Unknown test number\n", stderr);

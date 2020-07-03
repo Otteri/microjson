@@ -476,7 +476,8 @@ static int json_internal_read_object(const char *cp,
 		if (value_quoted && (cursor->type == t_string
                     || cursor->type == t_time))
 		    break;
-		if ((strcmp(valbuf, "true")==0 || strcmp(valbuf, "false")==0)
+		if ((strcmp(valbuf, "true")==0 || strcmp(valbuf, "false")==0
+			|| isdigit((unsigned char) valbuf[0]))
 			&& seeking == t_boolean)
 		    break;
 		if (isdigit((unsigned char) valbuf[0])) {
@@ -573,7 +574,7 @@ static int json_internal_read_object(const char *cp,
 		    break;
 		case t_boolean:
 		    {
-			bool tmp = (strcmp(valbuf, "true") == 0);
+			bool tmp = (strcmp(valbuf, "true") == 0 || strtol(valbuf, NULL, 0));
 			memcpy(lptr, &tmp, sizeof(bool));
 		    }
 		    break;
@@ -757,6 +758,14 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	    else if (str_starts_with(cp, "false")) {
 		arr->arr.booleans.store[offset] = false;
 		cp += 5;
+	    } else {
+		int val = strtol(cp, &ep, 0);
+		if (ep == cp)
+		    return JSON_ERR_BADNUM;
+		else {
+		    arr->arr.booleans.store[offset] = (bool) val;
+		    cp = ep;
+		}
 	    }
 	    break;
 	case t_character:
