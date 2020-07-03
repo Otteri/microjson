@@ -667,6 +667,35 @@ static const struct json_attr_t json_attrs_15[] = {
     {NULL},
 };
 
+/* Case 16: Read object within object within object.*/
+char json_inner1_name_string_dst[JSON_VAL_MAX];
+
+int inner1_value;
+int inner2_value;
+
+static const char *json_str16 = "{\"name\":\"wobble\",\"value\":{\"inner\":23, \"innerobject\":{\"innerinner\":123}}}\0READ PAST END OF BUFFER";
+
+const struct json_attr_t json_inner2_int_value[] = {
+	{"innerinner", t_integer,
+		 .addr.integer = &inner2_value},
+	{NULL},
+};
+const struct json_attr_t json_inner1_int_value[] = {
+	{"inner", t_integer,
+		 .addr.integer = &inner1_value},
+	{"innerobject", t_object,
+		 .addr.attrs = json_inner2_int_value},
+	{NULL},
+};
+static const struct json_attr_t json_object_16[] = {
+	{"name", t_string,
+		.addr.string = json_inner1_name_string_dst,
+		.len = sizeof(json_inner1_name_string_dst)},
+	{"value", t_object,
+		 .addr.attrs = json_inner1_int_value},
+	{NULL},
+};
+
 /* Insert more test definitions here */
 /* *INDENT-ON* */
 
@@ -824,7 +853,15 @@ static void jsontest(int i)
 	assert_boolean("flags4[2]", flags4[2], true);
 	break;
 	
-#define MAXTEST 15
+    case 16:
+	status = json_read_object(json_str16, json_object_16, NULL);
+	assert_case(i, status);
+	assert_integer("inner", inner1_value, 23);
+	assert_integer("innerinner", inner2_value, 123);
+	assert_string("name", json_inner1_name_string_dst, "wobble");
+	break;
+
+#define MAXTEST 16
 
     default:
 	(void)fputs("Unknown test number\n", stderr);

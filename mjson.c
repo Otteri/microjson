@@ -607,7 +607,9 @@ static int json_internal_read_object(const char *cp,
 	    else if (*cp == ',')
 		state = await_attr;
 	    else if (*cp == '}') {
-		++cp;
+		if (cp[1] != '\0') {
+			++cp;
+		}
 		goto good_parse;
 	    } else {
 		json_debug_trace((1, "Garbage while expecting comma or }\n"));
