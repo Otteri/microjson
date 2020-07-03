@@ -633,8 +633,8 @@ static const struct json_array_t json_array_13 = {
 
 /* Case 14: Read object within object. Test case not derived from GPSD */
 
-char json_inner_name_string_dst[JSON_VAL_MAX];
-int inner_value;
+static char json_inner_name_string_dst[JSON_VAL_MAX];
+static int inner_value;
 static const char *json_str14 = "{\"name\":\"wobble\",\"value\":{\"inner\":23}}";
 const struct json_attr_t json_inner_int_value[] = {
     {"inner", t_integer,
@@ -667,6 +667,7 @@ static const struct json_attr_t json_attrs_15[] = {
     {NULL},
 };
 
+/* Insert more test definitions here */
 /* *INDENT-ON* */
 
 static void jsontest(int i)
