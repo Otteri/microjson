@@ -421,7 +421,7 @@ static void assert_integer(char *attr, int fld, int check)
     }
 }
 
-static void assert_uinteger(char *attr, uint fld, uint check)
+static void assert_uinteger(char *attr, unsigned int fld, unsigned int check)
 {
     if (fld != check) {
 	(void)fprintf(stderr,
@@ -798,7 +798,7 @@ static void jsontest(int i)
 #define MAXTEST 14
 
     default:
-	(int)fputs("Unknown test number\n", stderr);
+	(void)fputs("Unknown test number\n", stderr);
 	break;
     }
 
