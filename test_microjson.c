@@ -696,6 +696,27 @@ static const struct json_attr_t json_object_16[] = {
 	{NULL},
 };
 
+/* Case 17: Parent struct enclosing enum in sub-struct followed by value outside of sub-struct */
+static int eval, ival;
+static const char *json_str17 = "{\"parentStruct\":{\"enumStruct\":{\"enumName\":\"NOT_SET\"},\"intName\":1}}";
+static const struct json_enum_t enum_table16[] = {
+    {"NOT_SET", 0}, {"SET", 1},{NULL}
+};
+
+static const struct json_attr_t json_enum_struct[] = {
+	{"enumName",  t_integer,.addr.integer = &eval,.map = enum_table16},
+	{NULL},
+};
+static const struct json_attr_t json_sub_struct[] = {
+	{"enumStruct",  t_object,.addr.attrs = json_enum_struct},
+	{"intName",  t_integer,.addr.integer = &ival},
+	{NULL},
+};
+static const struct json_attr_t json_object_17[] = {
+	{"parentStruct",  t_object,.addr.attrs = json_sub_struct},
+	{NULL},
+};
+
 /* Insert more test definitions here */
 /* *INDENT-ON* */
 
@@ -861,7 +882,14 @@ static void jsontest(int i)
 	assert_string("name", json_inner1_name_string_dst, "wobble");
 	break;
 
-#define MAXTEST 16
+    case 17:
+	status = json_read_object(json_str17, json_object_17, NULL);
+	assert_case(i, status);
+	assert_integer("ival", ival, 1);
+	assert_integer("eval", eval, 0);
+	break;
+
+#define MAXTEST 17
 
     default:
 	(void)fputs("Unknown test number\n", stderr);
