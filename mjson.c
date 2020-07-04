@@ -365,6 +365,7 @@ static int json_internal_read_object(const char *cp,
 		substatus = json_read_object(cp, cursor->addr.attrs, &cp);
 		if (substatus != 0)
 		    return substatus;
+		--cp;	// last } will be re-consumed by cp++ at end of loop
 		state = post_element;
 	    } else if (cursor->type == t_object) {
 		json_debug_trace((1,
@@ -607,9 +608,7 @@ static int json_internal_read_object(const char *cp,
 	    else if (*cp == ',')
 		state = await_attr;
 	    else if (*cp == '}') {
-		if (cp[1] != '\0') {
-			++cp;
-		}
+		++cp;
 		goto good_parse;
 	    } else {
 		json_debug_trace((1, "Garbage while expecting comma or }\n"));
@@ -623,7 +622,7 @@ static int json_internal_read_object(const char *cp,
 
   good_parse:
     /* in case there's another object following, consume trailing WS */
-    while (isspace((unsigned char) *cp))
+    while (*cp != '\0' && isspace((unsigned char) *cp))
 	++cp;
     if (end != NULL)
 	*end = cp;
