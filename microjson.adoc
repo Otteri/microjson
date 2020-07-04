@@ -27,7 +27,7 @@ examples; if you read the code carefully it will tell you
 more than the accompanying text. Just read it in sequence, trying not
 to skip anything.
 
-All the examples are shipped in the microjson distribution.  They are
+All the examples are shipped in the microjson distribution.  Most are
 not synthetic toys, but stripped-down versions of working code from
 GPSD. Copy them freely.  You may also want to look at the source for
 test_microjson.c, the regression test; it exercises most cases.
@@ -98,9 +98,10 @@ possible member name with a type and a target address.  The function
 +json_read_object()+ treats this array of constants as parsing
 instructions.
 
-When an unexpected attribute name is encountered, the parser terminates,
-returning an error status.  Attributes and values parsed before the 
-error modify their target storage.
+When an unexpected attribute name is encountered, the parser normally
+terminates, returning an error status (but it is possible to mage the
+parser ignore unknown attributes instead).  Attributes and values
+parsed before a terminating error modify their target storage.
 
 The parser recognizes a wider range of types than this, and the
 template structures can specify defaults when an expected JSON 
@@ -268,7 +269,7 @@ PRN = 29, elevation = 67, azimuth = 310
 --------------------------------------------------------
 
 In this case, the parser needs to be told where to find a template
-array describing how to parse the elment objects. The target addresses
+array describing how to parse the element objects. The target addresses
 in this structure will point to the base addressees of parallel arrays.
 The arrays are filled in until the parser runs out of conforming JSON
 sub-objects to parse or would exceed the +maxlen+ count of elements.
@@ -411,6 +412,11 @@ doubt, set the C numeric locale explicitly to match your data source.
 
 You should not assume that the numeric values of error codes are
 stable. Use the JSON_ERR_* names, not the numbers.
+
+We have been informed that it is possible to core-dump this code by
+passing NULL or bogus pointers to json_read_object(), so don't do
+that. There's no sanity check against bad arguments in order to
+keep the library small and light.
 
 == Advanced Usage ==
 
