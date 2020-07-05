@@ -464,6 +464,13 @@ static int json_internal_read_object(const char *cp,
 		*pval++ = *cp;
 	    break;
 	case post_val:
+	    // Ignore whitespace after either string or token values.
+	    if (isspace(*cp)) {
+		    while (*cp != '\0' && isspace((unsigned char) *cp)) {
+			++cp;
+		    }
+		    json_debug_trace((1, "Skipped trailing whitespace: value \"%s\"\n", valbuf));
+	    }
 	    /*
 	     * We know that cursor points at the first spec matching
 	     * the current attribute.  We don't know that it's *the*
@@ -515,7 +522,7 @@ static int json_internal_read_object(const char *cp,
 		    if (strcmp(mp->name, valbuf) == 0) {
 			goto foundit;
 		    }
-		json_debug_trace((1, "Invalid enumerated value string %s.\n",
+		json_debug_trace((1, "Invalid enumerated value string \"%s\".\n",
 				  valbuf));
 		return JSON_ERR_BADENUM;
 	      foundit:

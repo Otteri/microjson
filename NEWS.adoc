@@ -2,6 +2,8 @@
 
 head: 2019-08-18::
    It's now possible to match all previously unspecified fields ignored.
+   Whitespace after values is now skpped properly in more circumstances.
+   Integer values 0 and 1 are accepted for bools.
 
 1.5: 2019-03-06::
    It's now possible to read objects inside of objects (not just in arrays).

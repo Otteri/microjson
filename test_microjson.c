@@ -698,7 +698,7 @@ static const struct json_attr_t json_object_16[] = {
 
 /* Case 17: Parent struct enclosing enum in sub-struct followed by value outside of sub-struct */
 static int eval, ival;
-static const char *json_str17 = "{\"parentStruct\":{\"enumStruct\":{\"enumName\":\"NOT_SET\"},\"intName\":1}}";
+static const char *json_str17 = "{\"parentStruct\":{\"enumStruct\":{\"enumName\":\"NOT_SET\"\n},\"intName\":1}}";
 static const struct json_enum_t enum_table16[] = {
     {"NOT_SET", 0}, {"SET", 1},{NULL}
 };
