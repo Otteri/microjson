@@ -1,7 +1,7 @@
 /* example2.c - first example in the programming guide
  *
  * This file is Copyright (c) 2014 by Eric S. Raymond
- * BSD terms apply: see the file COPYING in the distribution root for details.
+ * SPDX-License-Identifier: BSD-2-Clause
  */
 #include <stdio.h>
 #include <stdlib.h>

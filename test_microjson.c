@@ -2,7 +2,6 @@
  *
  * This file is Copyright (c) 2014 by Eric S. Raymond
  * SPDX-License-Identifier: BSD-2-Clause
- * BSD terms apply: see the file COPYING in the distribution root for details.
  */
 
 #include <stdio.h>
