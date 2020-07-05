@@ -668,6 +668,7 @@ static const struct json_attr_t json_attrs_15[] = {
 };
 
 /* Case 16: Read object within object within object.*/
+
 char json_inner1_name_string_dst[JSON_VAL_MAX];
 
 int inner1_value;
@@ -697,6 +698,7 @@ static const struct json_attr_t json_object_16[] = {
 };
 
 /* Case 17: Parent struct enclosing enum in sub-struct followed by value outside of sub-struct */
+
 static int eval, ival;
 static const char *json_str17 = "{\"parentStruct\":{\"enumStruct\":{\"enumName\":\"NOT_SET\"\n},\"intName\":1}}";
 static const struct json_enum_t enum_table16[] = {
@@ -716,6 +718,13 @@ static const struct json_attr_t json_object_17[] = {
 	{"parentStruct",  t_object,.addr.attrs = json_sub_struct},
 	{NULL},
 };
+
+/* Case 18: Call json_read_object() on concatenated JSON objects. */
+
+static const char *json_cur18;
+static const char *json_end18;
+
+static const char *json_str18 = "{\"flag1\":1}{\"flag1\":0}{\"flag1\":7, \"flags4\":[1,0,7]} {\"flag2\":true, \"flags4\":[0,true,false]}";
 
 /* Insert more test definitions here */
 /* *INDENT-ON* */
@@ -889,7 +898,34 @@ static void jsontest(int i)
 	assert_integer("eval", eval, 0);
 	break;
 
-#define MAXTEST 17
+    case 18:
+	json_cur18 = json_str18;
+	json_end18 = json_str18 + strlen(json_str18);
+	/* first JSON message */
+	status = json_read_object(json_cur18, json_attrs_15, &json_cur18);
+	assert_case(i, status);
+	assert_boolean("flag1", flag1, true);
+	/* second JSON message */
+	status = json_read_object(json_cur18, json_attrs_15, &json_cur18);
+	assert_case(i, status);
+	assert_boolean("flag1", flag1, false);
+	/* third JSON message */
+	status = json_read_object(json_cur18, json_attrs_15, &json_cur18);
+	assert_case(i, status);
+	assert_boolean("flag1", flag1, true);
+	assert_boolean("flags4[0]", flags4[0], true);
+	assert_boolean("flags4[1]", flags4[1], false);
+	assert_boolean("flags4[2]", flags4[2], true);
+	/* fourth JSON message */
+	status = json_read_object(json_cur18, json_attrs_15, &json_cur18);
+	assert_case(i, status);
+	assert_boolean("flag2", flag2, true);
+	assert_boolean("flags4[0]", flags4[0], false);
+	assert_boolean("flags4[1]", flags4[1], true);
+	assert_boolean("flags4[2]", flags4[2], false);
+	break;
+
+#define MAXTEST 18
 
     default:
 	(void)fputs("Unknown test number\n", stderr);

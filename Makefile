@@ -9,7 +9,7 @@ CFLAGS += -DDEBUG_ENABLE -g
 # Add TIME_ENABLE to support RFC3339 time literals
 CFLAGS += -DTIME_ENABLE
 
-all: mjson.o test_microjson example1 example2 example3
+all: mjson.o test_microjson example1 example2 example3 example4
 	@./test_microjson
 
 mjson.o: mjson.c mjson.h
@@ -37,9 +37,10 @@ check: test_microjson test_microjson_wignore
 example1: example1.c mjson.c mjson.h
 example2: example2.c mjson.c mjson.h
 example3: example3.c mjson.c mjson.h
+example4: example4.c mjson.c mjson.h
 
 clean:
-	rm -f mjson.o test_microjson.o test_microjson example[123]
+	rm -f mjson.o test_microjson.o test_microjson example[1234]
 	rm -f microjson.html mjson.html
 
 SUPPRESSIONS = --suppress=unusedStructMember

@@ -1,5 +1,5 @@
 *.o
 *.html
 test_microjson
-example[123]
+example[1234]
 test_microjson_wignore
