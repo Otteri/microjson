@@ -290,6 +290,7 @@ static int json_device_read(const char *buf,
 		     struct devconfig_t *dev,
 		     const char **endptr)
 {
+    char tbuf[JSON_DATE_MAX+1];
     const struct json_attr_t json_attrs_device[] = {
 	{"class",      t_check,      .dflt.check = "DEVICE"},
 
@@ -320,6 +321,7 @@ static int json_device_read(const char *buf,
     /* *INDENT-ON* */
     int status;
 
+    tbuf[0] = '\0';
     status = json_read_object(buf, json_attrs_device, endptr);
     if (status != 0)
 	return status;
