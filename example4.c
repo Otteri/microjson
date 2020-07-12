@@ -26,15 +26,13 @@ const struct json_attr_t json_attrs_example4[] = {
 
 int main(int argc, char *argv[])
 {
-    int i, status = 0;
-
     const char* end = (const char*) argv[1] + strlen((const char*) argv[1]);
     const char* cur = (const char*) argv[1];
 
     while (cur < end) {
-	status = json_read_object(cur, json_attrs_example4, &cur);
+	int status = json_read_object(cur, json_attrs_example4, &cur);
 	printf("status: %d, flag1: %d\n", status, flag1);
-	for (i = 0; i < arr1_count; i++)
+	for (int i = 0; i < arr1_count; i++)
 	    printf("arr1 = %d\n", arr1[i]);
         if (status != 0)
 	    puts(json_error_string(status));

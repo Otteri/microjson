@@ -40,13 +40,13 @@ example3: example3.c mjson.c mjson.h
 example4: example4.c mjson.c mjson.h
 
 clean:
-	rm -f mjson.o test_microjson.o test_microjson example[1234]
+	rm -f mjson.o test_microjson.o test_microjson test_microjson_wignore example[1234]
 	rm -f microjson.html mjson.html
 
-SUPPRESSIONS = --suppress=unusedStructMember
+SUPPRESSIONS = --suppress=unusedStructMember --suppress=unreadVariable
 SUPPRESSIONS += -U__UNUSED__
 cppcheck:
-	cppcheck -I. --template gcc --enable=all $() $(SUPPRESSIONS) *.[ch]
+	cppcheck -I. --template gcc --enable=all $(SUPPRESSIONS) *.[ch]
 
 SOURCES = Makefile *.[ch]
 DOCS = README.adoc COPYING NEWS.adoc control microjson.adoc mjson.adoc
