@@ -1,6 +1,7 @@
-# Makefile for the microjson project:
+# Makefile for the microjson project
 
-VERSION=1.5
+# The version for release is derived from the mostt recent stanza in the news file.
+VERSION=$(shell sed -n <NEWS.adoc '/::/s/^\([0-9][^:]*\).*/\1/p' | head -1)
 
 CFLAGS = -O
 
@@ -42,6 +43,9 @@ example4: example4.c mjson.c mjson.h
 clean:
 	rm -f mjson.o test_microjson.o test_microjson test_microjson_wignore example[1234]
 	rm -f microjson.html mjson.html
+
+version:
+	@echo $(VERSION)
 
 SUPPRESSIONS = --suppress=unusedStructMember --suppress=unreadVariable
 SUPPRESSIONS += -U__UNUSED__
