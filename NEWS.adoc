@@ -1,6 +1,6 @@
 = microjson project news =
 
-1.6: 2019-08-18::
+1.6: 2020-07-12::
    It's now possible to match all previously unspecified fields ignored.
    Whitespace after values is now skpped properly in more circumstances.
    Integer values 0 and 1 are accepted for bools.
