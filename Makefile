@@ -40,8 +40,7 @@ example3: example3.c mjson.c mjson.h
 example4: example4.c mjson.c mjson.h
 
 clean:
-	rm -f mjson.o test_microjson.o test_microjson test_microjson_wignore example[1234]
-	rm -f microjson.html mjson.html
+	rm -f *.o *.html test_microjson test_microjson_wignore example[1234]
 
 version:
 	@echo $(VERSION)
