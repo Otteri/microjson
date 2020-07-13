@@ -141,7 +141,8 @@ to a C +unsigned int+ location. Uses +strtoul()+.
 to a C +double+ location. Uses +strtod()+.
 
 +t_boolean+: Accept one of the JSON literals +true+ or +false+,
-copy the value to a C +bool+ location.
+copy the value to a C +bool+ location. Numeric literal 0
+is accepted as equivalent to +false+, numeric literal 1 as +true+.
 
 +t_string+: Accept a JSON string literal, copy the contents to a
 C char buffer.
