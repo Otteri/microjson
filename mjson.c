@@ -250,6 +250,7 @@ static int json_internal_read_object(const char *cp,
 		case t_check:
 		case t_ignore:
 		    break;
+        default: break;
 		}
 	}
 
@@ -607,6 +608,7 @@ static int json_internal_read_object(const char *cp,
 			return JSON_ERR_CHECKFAIL;
 		    }
 		    break;
+        default: break;
 		}
 	    __attribute__ ((fallthrough));
 	case post_element:
@@ -624,6 +626,8 @@ static int json_internal_read_object(const char *cp,
 		return JSON_ERR_BADTRAIL;
 	    }
 	    break;
+
+    default: break;
 	}
     }
 
@@ -779,9 +783,11 @@ int json_read_array(const char *cp, const struct json_array_t *arr,
 	case t_character:
 	case t_array:
 	case t_check:
+    case t_time:
 	case t_ignore:
 	    json_debug_trace((1, "Invalid array subtype.\n"));
 	    return JSON_ERR_SUBTYPE;
+    default: return JSON_ERR_SUBTYPE;
 	}
 	arrcount++;
 	if (isspace((unsigned char) *cp))
@@ -856,4 +862,3 @@ const char *json_error_string(int err)
 }
 
 /* end */
-

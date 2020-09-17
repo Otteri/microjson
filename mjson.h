@@ -3,6 +3,7 @@
  * This file is Copyright (c) 2010 by the GPSD project
  * SPDX-License-Identifier: BSD-2-clause
  */
+#pragma once
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -62,7 +63,7 @@ struct json_array_t {
 struct json_attr_t {
     char *attribute;
     json_type type;
-    union {
+    union addr_tag {
 	int *integer;
 	unsigned int *uinteger;
 	short *shortint;
@@ -74,6 +75,12 @@ struct json_attr_t {
 	const struct json_attr_t *attrs;
 	const struct json_array_t array;
 	size_t offset;
+    #if defined(__cplusplus)
+    addr_tag() {}
+    addr_tag(int* i) : integer(i) {}
+    addr_tag(bool* b) : boolean(b) {}
+        #else
+    #endif
     } addr;
     union {
 	int integer;
@@ -88,6 +95,13 @@ struct json_attr_t {
     size_t len;
     const struct json_enum_t *map;
     bool nodefault;
+
+    #if defined(__cplusplus)
+    json_attr_t (nullptr_t) : attribute(nullptr) {}
+    json_attr_t (char* name, int* t) : attribute(name), type(t_integer), addr(t) {}
+    json_attr_t (char* name, bool* t) : attribute(name), type(t_boolean), addr(t) {}
+    #else
+    #endif
 };
 
 #define JSON_ATTR_MAX	31	/* max chars in JSON attribute name */
