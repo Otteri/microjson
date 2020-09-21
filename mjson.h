@@ -64,43 +64,108 @@ struct json_attr_t {
     char *attribute;
     json_type type;
     union addr_tag {
-	int *integer;
-	unsigned int *uinteger;
-	short *shortint;
-	unsigned short *ushortint;
-	double *real;
-	char *string;
-	bool *boolean;
-	char *character;
-	const struct json_attr_t *attrs;
-	const struct json_array_t array;
-	size_t offset;
-    #if defined(__cplusplus)
-    addr_tag() {}
-    addr_tag(int* i) : integer(i) {}
-    addr_tag(bool* b) : boolean(b) {}
-        #else
-    #endif
+        int *integer;
+        unsigned int *uinteger;
+        short *shortint;
+        unsigned short *ushortint;
+        double *real;
+        char *string;
+        bool *boolean;
+        char *character;
+        const struct json_attr_t *attrs;
+        const struct json_array_t array;
+        size_t offset;
+        #if defined(__cplusplus)
+        addr_tag() {}
+        addr_tag(int* in)            : integer(in) {}
+        addr_tag(unsigned int* in)   : uinteger(in) {}
+        addr_tag(short* in)          : shortint(in) {}
+        addr_tag(unsigned short* in) : ushortint(in) {}
+        addr_tag(double* in)         : real(in) {}
+        addr_tag(bool* in)           : boolean(in) {}
+        addr_tag(char* in)           : character(in) {}
+        // String is handled separately below; cannot overload here.
+        #endif
     } addr;
-    union {
-	int integer;
-	unsigned int uinteger;
-	short shortint;
-	unsigned short ushortint;
-	double real;
-	bool boolean;
-	char character;
-	char *check;
+    union dflt_tag {
+        int integer;
+        unsigned int uinteger;
+        short shortint;
+        unsigned short ushortint;
+        double real;
+        bool boolean;
+        char character;
+        char *check;
+        #if defined(__cplusplus)
+        dflt_tag() {}
+        dflt_tag(int in)            : integer(in) {}
+        dflt_tag(unsigned int in)   : uinteger(in) {}
+        dflt_tag(short in)          : shortint(in) {}
+        dflt_tag(unsigned short in) : ushortint(in) {}
+        dflt_tag(double in)         : real(in) {}
+        dflt_tag(bool* in)          : boolean(in) {}   
+        dflt_tag(char in)           : character(in) {}
+        // No default for str, because len must be given explicitly!
+        #endif
     } dflt;
     size_t len;
     const struct json_enum_t *map;
     bool nodefault;
 
     #if defined(__cplusplus)
-    json_attr_t (nullptr_t) : attribute(nullptr) {}
-    json_attr_t (char* name, int* t) : attribute(name), type(t_integer), addr(t) {}
-    json_attr_t (char* name, bool* t) : attribute(name), type(t_boolean), addr(t) {}
-    #else
+    // With default
+    json_attr_t(const char* name, json_type type, int* addr, int dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, unsigned int* addr, uint dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, short* addr, short dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, unsigned short* addr, unsigned short dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, double* addr, double dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, bool* addr, bool dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+    json_attr_t(const char* name, json_type type, char* addr, char dflt)
+        : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
+
+    // Without default value
+    json_attr_t(nullptr_t) : attribute(nullptr) {}
+    json_attr_t(const char* name, json_type type, int* addr)           : json_attr_t(name, type, addr, 0) {}
+    json_attr_t(const char* name, json_type type, unsigned int* addr)  : json_attr_t(name, type, addr, 0u) {}
+    json_attr_t(const char* name, json_type type, short* addr)         : json_attr_t(name, type, addr, 0) {}
+    json_attr_t(const char* name, json_type type, unsigned short* addr): json_attr_t(name, type, addr, 0u) {}
+    json_attr_t(const char* name, json_type type, double* addr)        : json_attr_t(name, type, addr, 0.0) {}
+    json_attr_t(const char* name, json_type type, bool* addr)          : json_attr_t(name, type, addr, false) {}
+
+
+    // String & character constructor
+    // Assignments, because addr_tag() cannot construct char and str automatically due to same input type
+    // It is not possible to utilize len argument, because it is given after dflt -> we should always have dflt.
+    json_attr_t(const char* name, json_type type, char* addr, size_t len=1u)
+        : attribute(const_cast<char*>(name)), type(type)
+    {
+        if (type == t_string) {
+            this->len = len;
+            this->addr.string = addr;
+        }
+        else if (type == t_character) {
+            this->len = 1u;
+            this->addr.character = addr;
+        };
+    }
+
+    json_attr_t(const char* name, json_type type, size_t len=1u) {
+        if (type == t_ignore) {
+            (void)name; // Silence warning: unused parameter
+            this->len = len;
+            return;
+        }
+        else {
+            puts("Invalid json_attr_t arguments. Missing storage field!");
+            exit(EXIT_FAILURE);
+        }
+    }
     #endif
 };
 
