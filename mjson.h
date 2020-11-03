@@ -27,7 +27,7 @@ struct json_enum_t {
 
 struct json_array_t {
     json_type element_type;
-    union {
+    union arr_tag {
 	struct {
 	    const struct json_attr_t *subtype;
 	    char *base;
@@ -50,14 +50,26 @@ struct json_array_t {
 	struct {
 	    unsigned short *store;
 	} ushorts;
-	struct {
+	struct double_tag {
 	    double *store;
+
+#if defined(__cplusplus)
+        double_tag(double *const array): store(array) {}
+#endif
 	} reals;
 	struct {
 	    bool *store;
 	} booleans;
+
+#if defined(__cplusplus)
+    arr_tag(double *const array) : reals(array) {}
+#endif
     } arr;
     int *count, maxlen;
+
+#if defined(__cplusplus)
+    json_array_t( double *const array, int *const len, int const maxlen ) : element_type(t_real), arr(array), count(len), maxlen(maxlen) {}
+#endif
 };
 
 struct json_attr_t {
@@ -75,7 +87,8 @@ struct json_attr_t {
         const struct json_attr_t *attrs;
         const struct json_array_t array;
         size_t offset;
-        #if defined(__cplusplus)
+
+#if defined(__cplusplus)
         addr_tag() {}
         addr_tag(int* in)            : integer(in) {}
         addr_tag(unsigned int* in)   : uinteger(in) {}
@@ -85,7 +98,8 @@ struct json_attr_t {
         addr_tag(bool* in)           : boolean(in) {}
         addr_tag(char* in)           : character(in) {}
         // String is handled separately below; cannot overload here.
-        #endif
+        addr_tag(double *const in, int *const len, int const maxlen) : array(in, len, maxlen) {}
+#endif
     } addr;
     union dflt_tag {
         int integer;
@@ -129,6 +143,10 @@ struct json_attr_t {
     json_attr_t(const char* name, json_type type, char* addr, char dflt)
         : attribute(const_cast<char*>(name)), type(type), addr(addr), dflt(dflt) {}
 
+    // Arrays with default value
+    json_attr_t(const char *const name, double *const addr, int *const len, int const maxlen, double const dflt)
+    : attribute(const_cast<char*>(name)), type(t_array), addr(addr,len,maxlen), dflt(dflt) {}
+
     // Without default value
     json_attr_t(nullptr_t) : attribute(nullptr) {}
     json_attr_t(const char* name, json_type type, int* addr)           : json_attr_t(name, type, addr, 0) {}
@@ -138,6 +156,8 @@ struct json_attr_t {
     json_attr_t(const char* name, json_type type, double* addr)        : json_attr_t(name, type, addr, 0.0) {}
     json_attr_t(const char* name, json_type type, bool* addr)          : json_attr_t(name, type, addr, false) {}
 
+    // Arrays without default value
+    json_attr_t(const char *const name, double *const addr, int *const len, int const maxlen)  : json_attr_t(name, addr, len, maxlen, 0.0) {}
 
     // String & character constructor
     // Assignments, because addr_tag() cannot construct char and str automatically due to same input type
